@@ -1839,11 +1839,11 @@
   margin-bottom: 24px;
 }
 /* List mode is a compact purchasing row, not another stacked card. */
-.products-collection.catalogue-list .counter-product-grid {
+:is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-product-grid {
   grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
-.products-collection.catalogue-list .counter-product {
+:is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-product {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
   gap: 0 32px;
@@ -1859,11 +1859,11 @@
   justify-content: start;
   margin-bottom: 8px;
 }
-.products-collection.catalogue-list .counter-product h4 {
+:is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-product h4 {
   font-size: 21px;
   margin-bottom: 0;
 }
-.products-collection.catalogue-list .counter-product-description {
+:is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-product-description {
   display: none;
 }
 .catalogue-list .counter-details {
@@ -1871,7 +1871,7 @@
   padding-block: 4px;
   min-height: 36px;
 }
-.products-collection.catalogue-list .counter-purchase {
+:is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-purchase {
   grid-column: 2;
   grid-row: 1 / 4;
   display: grid;
@@ -1947,12 +1947,12 @@
 }
 
 @media (max-width: 767px) {
-  .products-collection.catalogue-list .counter-product {
+  :is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-product {
     grid-template-columns: minmax(0, 1fr) 144px;
     gap: 0 14px;
     padding: 18px 16px;
   }
-  .products-collection.catalogue-list .counter-product h4 {
+  :is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-product h4 {
     font-size: 18px;
     line-height: 1.35;
   }
@@ -1968,7 +1968,7 @@
     min-height: 44px;
     gap: 5px;
   }
-  .products-collection.catalogue-list .counter-purchase {
+  :is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-purchase {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -2002,12 +2002,12 @@
   }
 }
 @media (max-width: 359px) {
-  .products-collection.catalogue-list .counter-product {
+  :is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-product {
     grid-template-columns: minmax(0, 1fr) 128px;
     gap: 0 10px;
     padding: 16px 12px;
   }
-  .products-collection.catalogue-list .counter-product h4 {
+  :is(.products-collection.catalogue-list, .counter-shop.catalogue-list) .counter-product h4 {
     font-size: 16px;
   }
 }
@@ -3701,5 +3701,37 @@
     :root[data-site-motion="on"] .board-profile:hover .leadership-portrait img {
       scale: 1.035;
     }
+  }
+}
+
+/* Touch has its own feedback; these effects don't depend on hover. */
+@keyframes site-selected-settle {
+  from { opacity: .65; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-site-motion="on"] :where(.products-categories, .products-layout, .services-switch, .media-filters) [aria-pressed="true"] {
+    animation: site-selected-settle 420ms cubic-bezier(.16,1,.3,1) both;
+  }
+  @media (hover: none), (pointer: coarse) {
+    :root[data-site-motion="on"] :where(button, .button-primary, .button-secondary, summary):active:not(:disabled):not([aria-disabled="true"]) {
+      scale: .97;
+      transition-duration: 100ms;
+    }
+  }
+}
+
+/* Homepage featured products reuse the catalogue's existing layout controls. */
+.counter-heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 767px) {
+  .counter-heading-actions {
+    width: 100%;
+    justify-content: space-between;
   }
 }

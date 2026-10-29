@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ArrowRight, ShoppingBag } from "lucide-react";
+import { ArrowRight, ShoppingBag, LayoutGrid, LayoutList } from "lucide-react";
 import { Product } from "../types";
 import { QuotationItem } from "../lib/storage";
 
@@ -39,6 +39,7 @@ export function ProductCollection({
 }: FeaturedProductsProps) {
   const [quantities, setQuantities] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const featured = featuredOnly
     ? featuredNames
         .map((name) => products.find((product) => product.name === name))
@@ -50,7 +51,7 @@ export function ProductCollection({
 
   return (
     <div
-      className="counter-shop"
+      className={`counter-shop ${showIntro && viewMode === "list" ? "catalogue-list" : ""}`}
       aria-label={showIntro ? undefined : "Product selection"}
       aria-labelledby={showIntro ? "popular-cuts-heading" : undefined}
     >
@@ -60,9 +61,31 @@ export function ProductCollection({
             <h3 id="popular-cuts-heading">Start with a favourite</h3>
             <p>Choose your cut, set the weight and add it to your cart.</p>
           </div>
-          <span className="counter-quote-note">
-            Prices confirmed by our sales team
-          </span>
+          <div className="counter-heading-actions">
+            <span className="counter-quote-note">
+              Prices confirmed by our sales team
+            </span>
+            <div className="products-layout" role="group" aria-label="Featured product layout">
+              <button
+                type="button"
+                aria-label="Grid view"
+                title="Grid view"
+                aria-pressed={viewMode === "grid"}
+                onClick={() => setViewMode("grid")}
+              >
+                <LayoutGrid className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="List view"
+                title="List view"
+                aria-pressed={viewMode === "list"}
+                onClick={() => setViewMode("list")}
+              >
+                <LayoutList className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
         </div>
       )}
       <div className="counter-product-grid">
