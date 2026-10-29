@@ -17,7 +17,7 @@ export const AbattoirRailTicker: React.FC<AbattoirRailTickerProps> = ({ classNam
       aria-label="KACL Live Abattoir Monorail Processing Stream"
     >
       {/* Top stainless monorail track */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-400 via-slate-200 to-slate-400 opacity-80" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-slate-400 opacity-80" />
       <div className="absolute top-1 left-0 right-0 h-[1px] bg-emerald-500/40" />
 
       {/* Continuously gliding overhead rail conveyor */}

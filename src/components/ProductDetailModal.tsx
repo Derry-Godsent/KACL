@@ -62,14 +62,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
             {/* Image & Title Header */}
             <div className="flex flex-col sm:flex-row gap-6 items-start">
-              <div className="w-full sm:w-52 h-40 bg-white border border-[#E5E3DB] overflow-hidden shrink-0">
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
               <div className="space-y-3 flex-1">
                 <h3 className="font-serif text-2xl text-[#0A2618] leading-snug">
                   {product.name}

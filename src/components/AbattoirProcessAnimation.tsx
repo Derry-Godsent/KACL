@@ -154,7 +154,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
       </div>
 
       {/* Main Animation Stage */}
-      <div className="p-4 sm:p-6 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative min-h-[300px]">
+      <div className="p-4 sm:p-6 bg-slate-100 relative min-h-[300px]">
         {/* ======================================================== */}
         {/* MODE 1: MEAT BEING CUT ANIMATION                         */}
         {/* ======================================================== */}
@@ -218,12 +218,12 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
             </div>
 
             {/* The Butchery Block SVG Canvas */}
-            <div className="relative w-full h-64 sm:h-72 bg-gradient-to-b from-[#1E293B] via-[#0F172A] to-[#0B1120] rounded-xl overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
+            <div className="relative w-full h-64 sm:h-72 bg-slate-800 rounded-xl overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
               {/* Surgical Stainless Steel Table Texture & Grid Lines */}
-              <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#94A3B8_1px,transparent_1px)] [background-size:16px_16px]" />
+              <div className="absolute inset-0 opacity-15 bg-transparent [background-size:16px_16px]" />
 
               {/* Stainless Steel Overhead Light Glint */}
-              <div className="absolute top-0 left-1/4 w-1/2 h-8 bg-gradient-to-b from-white/20 to-transparent blur-md pointer-events-none" />
+              <div className="absolute top-0 left-1/4 w-1/2 h-8 bg-slate-400 blur-md pointer-events-none" />
 
               {/* Rulers on butchery block */}
               <div className="absolute bottom-2 left-6 right-6 flex justify-between text-[9px] font-mono text-slate-400 border-t border-slate-700 pt-1">
@@ -477,9 +477,9 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
             </div>
 
             {/* Overhead Conveyor Rail SVG Scene */}
-            <div className="relative w-full h-72 sm:h-80 bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A] rounded-xl overflow-hidden border border-slate-700 shadow-inner flex flex-col justify-between p-4">
+            <div className="relative w-full h-72 sm:h-80 bg-slate-800 rounded-xl overflow-hidden border border-slate-700 shadow-inner flex flex-col justify-between p-4">
               {/* Stainless Overhead Rail Beam */}
-              <div className="w-full h-4 bg-gradient-to-b from-slate-400 via-slate-200 to-slate-500 rounded relative shadow-md">
+              <div className="w-full h-4 bg-slate-400 rounded relative shadow-md">
                 <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-600" />
                 {/* Overhead Trolley Hooks Moving Along Rail */}
                 <div

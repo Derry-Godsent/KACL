@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { BackToTop } from './components/BackToTop';
 import { QuotationDrawer } from './components/QuotationDrawer';
 import { ProductDetailModal } from './components/ProductDetailModal';
 
@@ -40,9 +41,12 @@ import {
   QuotationItem
 } from './lib/storage';
 import { Product, CustomerInquiry, PublicNotice } from './types';
+import { resolveNavigation } from './lib/navigation';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<string>('home');
+  const [productCategory, setProductCategory] = useState('all');
+  const [navigationRequest, setNavigationRequest] = useState<{ targetId: string | null } | null>(null);
   const [products, setProducts] = useState<Product[]>(getStoredProducts());
   const [services] = useState(getStoredServices());
   const [outlets] = useState(getStoredOutlets());
@@ -61,9 +65,29 @@ export default function App() {
     saveQuotationCart(quotationItems);
   }, [quotationItems]);
 
-  const handleNavigate = (view: string) => {
-    setCurrentView(view);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Wait for the destination view to mount before locating its section.
+  useEffect(() => {
+    if (!navigationRequest) return;
+    const frame = window.requestAnimationFrame(() => {
+      const target = navigationRequest.targetId
+        ? document.getElementById(navigationRequest.targetId)
+        : null;
+      const headerHeight = document.querySelector('header')?.getBoundingClientRect().height || 0;
+      const top = target
+        ? Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerHeight - 20)
+        : 0;
+      target?.focus({ preventScroll: true });
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top, behavior: reducedMotion ? 'instant' : 'smooth' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [navigationRequest]);
+
+  const handleNavigate = (destination: string) => {
+    const route = resolveNavigation(destination);
+    if (route.category !== null) setProductCategory(route.category);
+    setCurrentView(route.view);
+    setNavigationRequest({ targetId: route.targetId });
   };
 
   const handleAddToQuotation = (product: Product, quantityKg: number = 20) => {
@@ -170,6 +194,8 @@ export default function App() {
       <main id="main-content" className="flex-1">
         {currentView === 'home' && (
           <HomeView
+            quotationItems={quotationItems}
+            onOpenQuotationDrawer={() => setIsQuotationDrawerOpen(true)}
             onNavigate={handleNavigate}
             products={products}
             onAddToQuotation={handleAddToQuotation}
@@ -182,11 +208,14 @@ export default function App() {
         )}
 
         {(currentView === 'services' || currentView === 'marketing') && (
-          <ServicesView onNavigate={handleNavigate} />
+          <ServicesView key={currentView} initialTab={currentView === 'marketing' ? 'marketing' : 'abattoir'} onNavigate={handleNavigate} />
         )}
 
         {currentView === 'products' && (
           <ProductsView
+            quotationItems={quotationItems}
+            key={productCategory}
+            initialCategory={productCategory}
             products={products}
             onAddToQuotation={handleAddToQuotation}
             onOpenProductModal={(p) => setActiveProductModal(p)}
@@ -194,6 +223,8 @@ export default function App() {
             quotationItemCount={quotationItems.length}
           />
         )}
+
+        {currentView === 'food-safety' && <FoodSafetyView onNavigate={handleNavigate} />}
 
         {currentView === 'media' && (
           <MediaView onNavigate={handleNavigate} />
@@ -251,6 +282,8 @@ export default function App() {
           auditLogs={auditLogs}
         />
       )}
+
+      <BackToTop hidden={isQuotationDrawerOpen || activeProductModal !== null || isStaffPortalOpen} />
 
       {/* Global Footer */}
       <Footer

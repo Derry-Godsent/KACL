@@ -52,13 +52,13 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
           <div className="p-6 border-b border-[#E5E3DB] flex items-center justify-between bg-white">
             <div className="space-y-1">
               <span className="font-mono text-[11px] text-[#047857] uppercase tracking-wider font-semibold">
-                Commercial RFQ
+                Ready when you are
               </span>
               <h2 className="font-serif text-xl sm:text-2xl text-[#0A2618]">
-                Quotation Draft
+                Your quote cart
               </h2>
               <p className="font-mono text-xs text-slate-500">
-                {items.length} {items.length === 1 ? 'item' : 'items'} in current requisition
+                {items.length} {items.length === 1 ? 'item' : 'items'} ready for a quote
               </p>
             </div>
             <button
@@ -76,18 +76,18 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
               <div className="text-center py-16 px-4 space-y-3">
                 <div className="font-serif text-lg text-slate-600">No items selected yet</div>
                 <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
-                  Browse the wholesale catalogue or cuts ledger and select &quot;Add to Quotation Draft&quot; to compile your supply requirements.
+                  Browse the wholesale catalogue or cuts ledger and select &quot;Add to Your quote cart&quot; to compile your supply requirements.
                 </p>
               </div>
             ) : (
               <div className="space-y-4">
                 <div className="flex justify-between items-center text-xs pb-2 border-b border-[#E5E3DB]">
-                  <span className="font-mono text-[11px] uppercase text-slate-400">Selected Product Specifications</span>
+                  <span className="font-mono text-[11px] uppercase text-slate-400">Selected products</span>
                   <button
                     onClick={onClearAll}
                     className="font-mono text-xs text-rose-700 hover:text-rose-900 cursor-pointer font-medium"
                   >
-                    Clear Requisition
+                    Clear cart
                   </button>
                 </div>
 
@@ -113,6 +113,7 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
                           onClick={() => onRemoveItem(item.productId)}
                           className="p-1 text-slate-400 hover:text-rose-700 cursor-pointer"
                           title="Remove item"
+                          aria-label={`Remove ${item.productName} from cart`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -124,11 +125,12 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
                           <input
                             id={`kg-input-${item.productId}`}
                             type="number"
-                            min="5"
-                            step="5"
-                            value={item.estimatedKg || 10}
+                            min="1"
+                            max="10000"
+                            step="any"
+                            value={item.estimatedKg || 1}
                             onChange={(e) =>
-                              onUpdateQuantity(item.productId, Math.max(5, parseInt(e.target.value) || 0))
+                              onUpdateQuantity(item.productId, Math.min(10000, Math.max(1, parseFloat(e.target.value) || 1)))
                             }
                             className="w-20 px-2 py-1 bg-[#FAF9F5] border border-[#E5E3DB] text-right font-mono text-xs tabular-nums focus:outline-none focus:border-[#0A2618]"
                           />
@@ -159,7 +161,7 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
                 }}
                 className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#0A2618] hover:bg-[#123C27] text-white text-xs font-mono font-semibold transition-colors cursor-pointer min-h-[44px]"
               >
-                <span>Proceed to Formal RFQ Form</span>
+                <span>Request a quote</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
