@@ -42,9 +42,11 @@ import {
 } from './lib/storage';
 import { Product, CustomerInquiry, PublicNotice } from './types';
 import { resolveNavigation } from './lib/navigation';
+import { useSiteMotion } from './lib/useSiteMotion';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<string>('home');
+  useSiteMotion(currentView);
   const [productCategory, setProductCategory] = useState('all');
   const [navigationRequest, setNavigationRequest] = useState<{ targetId: string | null } | null>(null);
   const [products, setProducts] = useState<Product[]>(getStoredProducts());

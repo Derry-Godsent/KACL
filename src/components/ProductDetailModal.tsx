@@ -38,7 +38,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       />
 
       <div className="flex min-h-full items-end sm:items-center justify-center p-0 sm:p-4">
-        <div className="relative w-full max-w-2xl bg-[#FAF9F5] border border-[#E5E3DB] shadow-2xl overflow-hidden my-0 sm:my-8 max-h-[92vh] sm:max-h-[85vh] flex flex-col">
+        <div className="motion-modal-panel relative w-full max-w-2xl bg-[#FAF9F5] border border-[#E5E3DB] shadow-2xl overflow-hidden my-0 sm:my-8 max-h-[92vh] sm:max-h-[85vh] flex flex-col">
           {/* Header */}
           <div className="p-5 border-b border-[#E5E3DB] flex items-center justify-between bg-white shrink-0">
             <div className="flex items-center gap-3">

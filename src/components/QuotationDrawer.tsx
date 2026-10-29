@@ -46,7 +46,7 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
         aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10 w-full sm:w-auto">
+      <div className="motion-drawer-panel fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10 w-full sm:w-auto">
         <div className="w-full sm:w-[460px] max-w-full bg-[#FAF9F5] border-l border-[#E5E3DB] flex flex-col shadow-2xl">
           {/* Header */}
           <div className="p-6 border-b border-[#E5E3DB] flex items-center justify-between bg-white">
