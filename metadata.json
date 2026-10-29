@@ -1,0 +1,6 @@
+{
+  "name": "Kumasi Abattoir Company Limited (KACL)",
+  "description": "Official corporate website and product catalogue for Kumasi Abattoir Company Limited in Kumasi, Ghana. Hygienic meat processing, veterinary certified beef, bulk institutional supply, and retail outlets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
