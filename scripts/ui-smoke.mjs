@@ -57,8 +57,8 @@ try {
   const { KACL_BOARD_MEMBERS, KACL_MANAGEMENT } = await server.ssrLoadModule("/src/data/initialData.ts");
   const about = renderToStaticMarkup(React.createElement(AboutView, { onNavigate: noop }));
   assert.equal((about.match(/class="board-profile"/g) || []).length, 13);
-  assert.equal((about.match(/class="management-profile"/g) || []).length, 6);
-  assert.equal((about.match(/class="leadership-monogram"/g) || []).length, 11);
+  assert.equal((about.match(/class="management-profile"/g) || []).length, 7);
+  assert.equal((about.match(/class="leadership-monogram"/g) || []).length, 6);
   assert.equal(KACL_BOARD_MEMBERS.filter(member => member.portraitUrl).length, 8);
   const boardMarkup = about.slice(about.indexOf('class="board-portrait-grid"'), about.indexOf('class="about-management"'));
   const firstPlaceholder = Math.min(...KACL_BOARD_MEMBERS.filter(member => !member.portraitUrl).map(member => boardMarkup.indexOf(member.name)));
@@ -71,7 +71,14 @@ try {
     assert.ok(readFileSync(`public${member.portraitUrl}`).length > 0);
     assert.ok(about.includes(member.portraitUrl));
   }
-  assert.ok(KACL_MANAGEMENT.every(member => !member.portraitUrl));
+  assert.equal(KACL_MANAGEMENT.filter(member => member.portraitUrl).length, 6);
+  assert.deepEqual(KACL_MANAGEMENT.filter(member => !member.portraitUrl).map(member => member.name), ['Michael Tongban']);
+  assert.equal(KACL_MANAGEMENT.find(member => member.name === 'Ebenezer Awuah Kusi').position, 'Head, Engineering Unit');
+  for (const member of KACL_MANAGEMENT.filter(member => member.portraitUrl)) {
+    assert.ok(readFileSync(`public${member.portraitUrl}`).length > 0);
+    assert.ok(about.includes(member.portraitUrl));
+    assert.ok(about.includes(`alt="Portrait of ${member.name}"`));
+  }
 
   for (const member of [...KACL_BOARD_MEMBERS, ...KACL_MANAGEMENT]) assert.ok(about.includes(member.name));
   const eightPortraits = renderToStaticMarkup(React.createElement(React.Fragment, null,

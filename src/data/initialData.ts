@@ -67,12 +67,13 @@ export const KACL_BOARD_MEMBERS: BoardMember[] = [
 ];
 
 export const KACL_MANAGEMENT: ManagementMember[] = [
-  { position: 'Managing Director', name: 'Alhaji Alhassan A. Mahamadu', department: 'Executive Management' },
-  { position: 'Admin/HR Manager', name: 'Mrs. Elizabeth Ahlijah Tetteh', department: 'Administration/Human Resources' },
+  { position: 'Managing Director', name: 'Alhaji Alhassan A. Mahamadu', department: 'Executive Management', portraitUrl: '/images/leadership/alhassan-mahamadu.jpg' },
+  { position: 'Admin/HR Manager', name: 'Mrs. Elizabeth Ahlijah Tetteh', department: 'Administration/Human Resources', portraitUrl: '/images/leadership/elizabeth-ahlijah.jpg' },
   { position: 'Production Manager', name: 'Michael Tongban', department: 'Production' },
-  { position: 'Finance Head', name: 'Daniel Boateng Siaw', department: 'Finance' },
-  { position: 'Marketing Head', name: 'Samuel Boison', department: 'Marketing/Processing' },
-  { position: 'Internal Auditor', name: 'Gregory Berchie', department: 'Audit' }
+  { position: 'Finance Head', name: 'Daniel Boateng Siaw', department: 'Finance', portraitUrl: '/images/leadership/daniel-boateng-siaw.jpg' },
+  { position: 'Marketing Head', name: 'Samuel Boison', department: 'Marketing/Processing', portraitUrl: '/images/leadership/samuel-boison.jpg' },
+  { position: 'Internal Auditor', name: 'Gregory Berchie', department: 'Audit', portraitUrl: '/images/leadership/gregory-berchie.jpg' },
+  { position: 'Head, Engineering Unit', name: 'Ebenezer Awuah Kusi', department: 'Engineering Unit', portraitUrl: '/images/leadership/ebenezer-awuah-kusi.jpg' }
 ];
 
 export const KACL_DEPARTMENTS = [
