@@ -22,25 +22,19 @@ import { DeliveryView } from './views/DeliveryView';
 import { NoticesView } from './views/NoticesView';
 import { ContactView } from './views/ContactView';
 import { PoliciesView } from './views/PoliciesView';
-import { StaffCmsView } from './views/StaffCmsView';
 import { MediaView } from './views/MediaView';
 
 // Data & Storage
 import {
   getStoredProducts,
-  getStoredServices,
-  getStoredOutlets,
-  getStoredNotices,
-  saveStoredNotices,
   getStoredInquiries,
   saveStoredInquiries,
-  getStoredAuditLogs,
   addAuditLog,
   getQuotationCart,
   saveQuotationCart,
   QuotationItem
 } from './lib/storage';
-import { Product, CustomerInquiry, PublicNotice } from './types';
+import { Product, CustomerInquiry } from './types';
 import { resolveNavigation } from './lib/navigation';
 import { useSiteMotion } from './lib/useSiteMotion';
 
@@ -49,18 +43,13 @@ export default function App() {
   useSiteMotion(currentView);
   const [productCategory, setProductCategory] = useState('all');
   const [navigationRequest, setNavigationRequest] = useState<{ targetId: string | null } | null>(null);
-  const [products, setProducts] = useState<Product[]>(getStoredProducts());
-  const [services] = useState(getStoredServices());
-  const [outlets] = useState(getStoredOutlets());
-  const [notices, setNotices] = useState<PublicNotice[]>(getStoredNotices());
+  const [products] = useState<Product[]>(getStoredProducts());
   const [inquiries, setInquiries] = useState<CustomerInquiry[]>(getStoredInquiries());
-  const [auditLogs, setAuditLogs] = useState(getStoredAuditLogs());
 
   // Interactive overlays
   const [quotationItems, setQuotationItems] = useState<QuotationItem[]>(getQuotationCart());
   const [isQuotationDrawerOpen, setIsQuotationDrawerOpen] = useState(false);
   const [activeProductModal, setActiveProductModal] = useState<Product | null>(null);
-  const [isStaffPortalOpen, setIsStaffPortalOpen] = useState(false);
 
   // Sync quotation cart changes to localStorage
   useEffect(() => {
@@ -141,36 +130,6 @@ export default function App() {
       `New enquiry lodged by ${newInquiry.fullName} (${newInquiry.referenceNumber})`,
       'web_inbound'
     );
-    setAuditLogs(getStoredAuditLogs());
-  };
-
-  const handleUpdateInquiryStatus = (
-    inquiryId: string,
-    newStatus: CustomerInquiry['status'],
-    internalNotes?: string
-  ) => {
-    const updated = inquiries.map((inq) =>
-      inq.id === inquiryId
-        ? { ...inq, status: newStatus, internalNotes: internalNotes ?? inq.internalNotes }
-        : inq
-    );
-    setInquiries(updated);
-    saveStoredInquiries(updated);
-    setAuditLogs(getStoredAuditLogs());
-  };
-
-  const handleAddNotice = (notice: PublicNotice) => {
-    const updated = [notice, ...notices];
-    setNotices(updated);
-    saveStoredNotices(updated);
-    setAuditLogs(getStoredAuditLogs());
-  };
-
-  const handleUpdateProduct = (updatedProduct: Product) => {
-    const updated = products.map((p) =>
-      p.id === updatedProduct.id ? updatedProduct : p
-    );
-    setProducts(updated);
   };
 
   return (
@@ -189,7 +148,6 @@ export default function App() {
         onNavigate={handleNavigate}
         quotationItems={quotationItems}
         onOpenQuotationDrawer={() => setIsQuotationDrawerOpen(true)}
-        onOpenStaffPortal={() => setIsStaffPortalOpen(true)}
       />
 
       {/* Primary Page Content */}
@@ -270,27 +228,11 @@ export default function App() {
         onAddToQuotation={handleAddToQuotation}
       />
 
-      {/* Protected Staff CMS Portal Modal */}
-      {isStaffPortalOpen && (
-        <StaffCmsView
-          onClose={() => setIsStaffPortalOpen(false)}
-          inquiries={inquiries}
-          onUpdateInquiryStatus={handleUpdateInquiryStatus}
-          products={products}
-          onUpdateProduct={handleUpdateProduct}
-          notices={notices}
-          onAddNotice={handleAddNotice}
-          outlets={outlets}
-          auditLogs={auditLogs}
-        />
-      )}
-
-      <BackToTop hidden={isQuotationDrawerOpen || activeProductModal !== null || isStaffPortalOpen} />
+      <BackToTop hidden={isQuotationDrawerOpen || activeProductModal !== null} />
 
       {/* Global Footer */}
       <Footer
         onNavigate={handleNavigate}
-        onOpenStaffPortal={() => setIsStaffPortalOpen(true)}
       />
     </div>
   );

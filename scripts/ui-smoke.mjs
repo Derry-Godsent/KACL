@@ -168,7 +168,6 @@ try {
       quotationItems: [],
       onNavigate: noop,
       onOpenQuotationDrawer: noop,
-      onOpenStaffPortal: noop,
     }),
   );
   assert.ok(header.includes('/images/brand/kacl-logo.png'));
@@ -176,9 +175,12 @@ try {
   assert.ok(readFileSync('public/images/brand/kacl-logo.png').length > 0);
   const { Footer } = await server.ssrLoadModule('/src/components/Footer.tsx');
   const footer = renderToStaticMarkup(React.createElement(Footer, {
-    onNavigate: noop, onOpenStaffPortal: noop,
+    onNavigate: noop,
   }));
   assert.ok(footer.includes('/images/brand/kacl-logo.png'));
+  assert.ok(!/Staff portal|Protected Staff Administration/.test(header + footer));
+  assert.ok(!readFileSync('src/App.tsx', 'utf8').includes('StaffCmsView'));
+
   const documentHead = readFileSync('index.html', 'utf8');
   assert.ok(documentHead.includes('rel="icon" type="image/jpeg" href="/images/brand/cow-tab-icon.jpg"'));
   assert.ok(!readFileSync('src/index.css', 'utf8').includes('nav-brand-monogram'));

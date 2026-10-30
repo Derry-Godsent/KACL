@@ -4,15 +4,14 @@
  */
 
 import React from 'react';
-import { Phone, Mail, MapPin, Clock, Shield, ArrowUpRight } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { KACL_COMPANY_INFO } from '../data/initialData';
 
 interface FooterProps {
   onNavigate: (view: string) => void;
-  onOpenStaffPortal: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
     <footer className="bg-[#071e38] text-slate-300 border-t border-[#083d73]">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 lg:py-16">
@@ -180,16 +179,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal })
                   className="hover:text-white transition-colors text-left cursor-pointer"
                 >
                   Public & Operational Notices
-                </button>
-              </li>
-              <li className="pt-2">
-                <button
-                  onClick={onOpenStaffPortal}
-                  className="inline-flex items-center gap-1.5 text-xs text-sky-400 hover:text-white font-medium cursor-pointer"
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                  <span>Protected Staff Administration</span>
-                  <ArrowUpRight className="w-3 h-3" />
                 </button>
               </li>
             </ul>

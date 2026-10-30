@@ -4,7 +4,6 @@ import {
   Menu,
   X,
   Phone,
-  ShieldCheck,
   ArrowRight,
   Clock,
 } from "lucide-react";
@@ -16,7 +15,6 @@ interface HeaderProps {
   onNavigate: (view: string) => void;
   quotationItems: QuotationItem[];
   onOpenQuotationDrawer: () => void;
-  onOpenStaffPortal: () => void;
 }
 
 const navLinks = [
@@ -33,7 +31,6 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigate,
   quotationItems,
   onOpenQuotationDrawer,
-  onOpenStaffPortal,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
@@ -49,10 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
     setMobileMenuOpen(false);
     onOpenQuotationDrawer();
   };
-  const openStaff = () => {
-    setMobileMenuOpen(false);
-    onOpenStaffPortal();
-  };
+
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -109,14 +103,6 @@ export const Header: React.FC<HeaderProps> = ({
               <Phone className="w-3 h-3" aria-hidden="true" />
               {KACL_COMPANY_INFO.primaryPhone}
             </a>
-            <button
-              type="button"
-              className="nav-utility-staff"
-              onClick={openStaff}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
-              Staff portal
-            </button>
           </div>
         </div>
       </div>
@@ -215,10 +201,6 @@ export const Header: React.FC<HeaderProps> = ({
                   {KACL_COMPANY_INFO.salesHotline}
                 </a>
               </div>
-              <button type="button" onClick={openStaff}>
-                <ShieldCheck className="w-4 h-4" />
-                Staff portal
-              </button>
             </div>
             <button
               type="button"
