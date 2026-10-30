@@ -48,7 +48,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="pt-2 text-xs text-slate-400 space-y-1">
               <div>
                 <span className="text-slate-500">Supervisory Body:</span>{' '}
-                <span className="text-slate-300">Ministry of Food &amp; Agriculture, Food and Drugs Authority, Veterinary Services Department</span>
+                <span className="text-slate-300">
+                  <a href="https://mofa.gov.gh/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300">Ministry of Food &amp; Agriculture<span className="sr-only"> (opens in a new tab)</span></a>,{' '}
+                  <a href="https://fdaghana.gov.gh/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300">Food and Drugs Authority<span className="sr-only"> (opens in a new tab)</span></a>,{' '}
+                  <a href="https://vsd.gov.gh/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 decoration-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300">Veterinary Services Department<span className="sr-only"> (opens in a new tab)</span></a>
+                </span>
               </div>
               <div>
                 <span className="text-slate-500">Facility Location:</span>{' '}

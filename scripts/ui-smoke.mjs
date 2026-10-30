@@ -243,7 +243,9 @@ try {
     assert.ok(outlets.includes(outlet.name));
     assert.ok(footer.includes(outlet.name));
   }
-  assert.ok(footer.includes('Food and Drugs Authority, Veterinary Services Department'));
+  for (const url of ['https://mofa.gov.gh/', 'https://fdaghana.gov.gh/', 'https://vsd.gov.gh/']) {
+    assert.ok(footer.includes(`href="${url}" target="_blank" rel="noopener noreferrer"`));
+  }
   assert.ok(!footer.includes('AK-039-4412'));
   const heroSource = readFileSync('src/components/HeroSlideshow.tsx', 'utf8');
   assert.ok(heroSource.includes('/images/kacl-executive.jpeg'));
