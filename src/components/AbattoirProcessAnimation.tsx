@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ShieldCheck, Play, Pause, RefreshCw, Scissors, Check, Flame, Truck, Award, Sparkles } from 'lucide-react';
 
 interface AbattoirProcessAnimationProps {
@@ -20,26 +20,51 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
   const [activeTab, setActiveTab] = useState<'cutting' | 'processing-line'>(initialMode);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [sliceProgress, setSliceProgress] = useState<number>(0);
-  const [sliceCount, setSliceCount] = useState<number>(3);
+  const [sliceCount, setSliceCount] = useState<number>(0);
+  const [isCutting, setIsCutting] = useState(false);
+  const cuttingRef = useRef(false);
+  const cutOnce = () => {
+    if (cuttingRef.current) return;
+    cuttingRef.current = true;
+    setSliceProgress(0);
+    setIsCutting(true);
+  };
   const [cutType, setCutType] = useState<'fillet' | 'tbone' | 'brisket'>('fillet');
   const [currentLineStep, setCurrentLineStep] = useState<number>(0);
 
-  // Meat cutting knife stroke cycle
+  // One deliberate input produces exactly one stroke. No automatic cutting.
   useEffect(() => {
-    if (!isPlaying || activeTab !== 'cutting') return;
-
-    const interval = setInterval(() => {
-      setSliceProgress((prev) => {
-        const next = (prev + 1) % 100;
-        if (next === 0) {
-          setSliceCount((c) => (c >= 6 ? 1 : c + 1));
-        }
-        return next;
-      });
-    }, 45);
-
-    return () => clearInterval(interval);
-  }, [isPlaying, activeTab]);
+    if (activeTab !== 'cutting') {
+      cuttingRef.current = false;
+      setIsCutting(false);
+      setSliceProgress(0);
+      return;
+    }
+    if (!isCutting) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setSliceCount(count => count + 1);
+      setSliceProgress(0);
+      cuttingRef.current = false;
+      setIsCutting(false);
+      return;
+    }
+    let frame: number;
+    let start: number | null = null;
+    const stroke = (time: number) => {
+      start ??= time;
+      const progress = Math.min(100, ((time - start) / 900) * 100);
+      setSliceProgress(progress);
+      if (progress < 100) frame = window.requestAnimationFrame(stroke);
+      else {
+        setSliceCount(count => count + 1);
+        setSliceProgress(0);
+        cuttingRef.current = false;
+        setIsCutting(false);
+      }
+    };
+    frame = window.requestAnimationFrame(stroke);
+    return () => window.cancelAnimationFrame(frame);
+  }, [isCutting, activeTab]);
 
   // Overhead Processing line conveyor cycle (Kraal -> Singeing/Flaying -> 4-Quartering -> Prime Cuts -> Cold Dispatch)
   useEffect(() => {
@@ -47,20 +72,17 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
 
     const interval = setInterval(() => {
       setCurrentLineStep((prev) => (prev + 1) % 5);
-    }, 3200);
+    }, 8000);
 
     return () => clearInterval(interval);
   }, [isPlaying, activeTab]);
 
-  // Knife position calculation: stroke down at 30%-60%
-  const isSlicingDown = sliceProgress >= 25 && sliceProgress <= 65;
-  const knifeY = isSlicingDown
-    ? 60 + Math.sin(((sliceProgress - 25) / 40) * Math.PI) * 45
-    : 45;
-  const knifeAngle = isSlicingDown
-    ? -8 + Math.sin(((sliceProgress - 25) / 40) * Math.PI) * 16
-    : -8;
-  const cutDepth = Math.max(0, Math.min(100, (sliceProgress - 25) * 2.5));
+  // Smooth down-and-up motion across one complete user-triggered stroke.
+  const isSlicingDown = isCutting && sliceProgress >= 25 && sliceProgress <= 75;
+  const strokeDepth = Math.sin((sliceProgress / 100) * Math.PI);
+  const knifeY = 45 + strokeDepth * 60;
+  const knifeAngle = -8 + strokeDepth * 14;
+  const cutDepth = isCutting ? Math.max(0, Math.min(100, (sliceProgress - 25) * 2.5)) : 0;
 
   const processingSteps = [
     {
@@ -208,11 +230,12 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                 </div>
                 <button
                   type="button"
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="p-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
-                  title={isPlaying ? 'Pause Animation' : 'Play Animation'}
+                  onClick={cutOnce}
+                  disabled={isCutting}
+                  className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-lg bg-[#0756a3] px-5 py-3 text-sm font-bold text-white hover:bg-[#06457f] disabled:opacity-60 cursor-pointer disabled:cursor-wait focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0072ce]"
                 >
-                  {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                  <Scissors className="w-5 h-5" aria-hidden="true" />
+                  {isCutting ? 'Cutting…' : 'Cut once'}
                 </button>
               </div>
             </div>
@@ -426,7 +449,19 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                   SLICES PREPARED: {sliceCount}
                 </span>
               </div>
+              <button
+                type="button"
+                className="absolute inset-0 z-10 cursor-pointer rounded-xl bg-transparent disabled:cursor-wait focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-sky-300 touch-manipulation"
+                onClick={cutOnce}
+                disabled={isCutting}
+                aria-label="Cut the meat once"
+                aria-describedby="cutting-instructions"
+              />
             </div>
+            <p id="cutting-instructions" className="text-sm font-medium text-[#06457f]" role="status" aria-live="polite">
+              {isCutting ? 'Cutting…' : 'Tap or click the meat to cut, or press Cut once.'}
+              {' '}{sliceCount} {sliceCount === 1 ? 'slice' : 'slices'} prepared.
+            </p>
 
             {/* Explanatory Technical Notes */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-[11px] text-slate-600">
@@ -461,18 +496,21 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:items-end">
+                <button
+                  type="button"
+                  onClick={() => setIsPlaying(previous => !previous)}
+                  className="inline-flex min-h-[48px] items-center justify-center gap-2.5 rounded-lg border border-[#0756a3] bg-[#0756a3] px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#06457f] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0072ce] cursor-pointer"
+                >
+                  {isPlaying ? <Pause className="w-5 h-5" aria-hidden="true" /> : <Play className="w-5 h-5" aria-hidden="true" />}
+                  {isPlaying ? 'Pause animation' : 'Play animation'}
+                </button>
+                <span className="text-xs text-slate-600">
+                  {isPlaying ? 'Each stage plays for 8 seconds.' : 'Paused. Press Play animation to continue.'}
+                </span>
                 <span className="text-[11px] font-mono text-sky-800 bg-sky-50 px-2 py-1 rounded border border-sky-200">
                   Current Station: {processingSteps[currentLineStep].title}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="p-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
-                  title={isPlaying ? 'Pause Animation' : 'Play Animation'}
-                >
-                  {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                </button>
               </div>
             </div>
 
@@ -502,7 +540,11 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                     <button
                       key={step.num}
                       type="button"
-                      onClick={() => setCurrentLineStep(idx)}
+                      onClick={() => {
+                        setCurrentLineStep(idx);
+                        setIsPlaying(false);
+                      }}
+                      aria-pressed={isActive}
                       className={`text-left p-2 rounded-lg transition-all cursor-pointer border ${
                         isActive
                           ? 'bg-[#06457f]/90 border-sky-400 text-white shadow-md scale-102 ring-1 ring-sky-400/50'

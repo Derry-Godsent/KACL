@@ -63,7 +63,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => (
             </li>
           ))}
         </ol>
-        <details className="about-mandate">
+        <details open className="about-mandate">
           <summary>
             Our lines of business under Company Code 1963 (Act 179)
           </summary>

@@ -48,7 +48,7 @@ const formatDate = (date: string) =>
 
 export const MediaView: React.FC<MediaViewProps> = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState<MediaCategory>("all");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [collapsedIds, setCollapsedIds] = useState<Set<string>>(() => new Set());
   const filteredItems = publishedItems.filter(
     (item) => activeTab === "all" || item.type === activeTab,
   );
@@ -60,7 +60,7 @@ export const MediaView: React.FC<MediaViewProps> = ({ onNavigate }) => {
 
   const renderArticle = (item: MediaItem, prominent = false) => {
     const Icon = icons[item.type];
-    const expanded = expandedId === item.id;
+    const expanded = !collapsedIds.has(item.id);
     return (
       <article
         className={prominent ? "media-featured" : "media-story"}
@@ -92,7 +92,12 @@ export const MediaView: React.FC<MediaViewProps> = ({ onNavigate }) => {
               aria-expanded={expanded}
               aria-controls={`media-content-${item.id}`}
               aria-label={`${expanded ? "Close" : "Read"} ${item.title}`}
-              onClick={() => setExpandedId(expanded ? null : item.id)}
+              onClick={() => setCollapsedIds(previous => {
+                const next = new Set(previous);
+                if (next.has(item.id)) next.delete(item.id);
+                else next.add(item.id);
+                return next;
+              })}
             >
               {expanded ? "Close article" : "Read more"}
               <ArrowRight className="w-4 h-4" />
@@ -135,7 +140,6 @@ export const MediaView: React.FC<MediaViewProps> = ({ onNavigate }) => {
                 aria-controls="media-results"
                 onClick={() => {
                   setActiveTab(category.id);
-                  setExpandedId(null);
                 }}
               >
                 {category.label}
@@ -187,7 +191,6 @@ export const MediaView: React.FC<MediaViewProps> = ({ onNavigate }) => {
                 className="button-secondary"
                 onClick={() => {
                   setActiveTab("all");
-                  setExpandedId(null);
                 }}
               >
                 Browse company updates <ArrowRight className="w-4 h-4" />

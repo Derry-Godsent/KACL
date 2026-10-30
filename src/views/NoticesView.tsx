@@ -14,7 +14,7 @@ interface NoticesViewProps {
 
 export const NoticesView: React.FC<NoticesViewProps> = ({ notices, onNavigate }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [expandedNoticeId, setExpandedNoticeId] = useState<string | null>(notices[0]?.id || null);
+  const [collapsedNoticeIds, setCollapsedNoticeIds] = useState<Set<string>>(() => new Set());
 
   const categories = ['all', 'Operational', 'Holiday Schedule', 'Veterinary Notice', 'Public Announcement'];
 
@@ -71,7 +71,7 @@ export const NoticesView: React.FC<NoticesViewProps> = ({ notices, onNavigate })
           {/* Notices Ledger (Cardless) */}
           <div className="divide-y divide-[#dce6f0]">
             {filteredNotices.map((notice) => {
-              const isExpanded = expandedNoticeId === notice.id;
+              const isExpanded = !collapsedNoticeIds.has(notice.id);
 
               return (
                 <article
@@ -115,7 +115,13 @@ export const NoticesView: React.FC<NoticesViewProps> = ({ notices, onNavigate })
 
                   <div className="lg:col-span-2 flex lg:justify-end">
                     <button
-                      onClick={() => setExpandedNoticeId(isExpanded ? null : notice.id)}
+                      aria-expanded={isExpanded}
+                      onClick={() => setCollapsedNoticeIds(previous => {
+                        const next = new Set(previous);
+                        if (next.has(notice.id)) next.delete(notice.id);
+                        else next.add(notice.id);
+                        return next;
+                      })}
                       className="font-mono text-xs text-[#06457f] hover:text-[#0072ce] font-semibold transition-colors cursor-pointer"
                     >
                       {isExpanded ? '[-] Collapse Gazette' : '[+] Read Full Gazette'}

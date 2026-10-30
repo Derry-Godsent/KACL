@@ -122,7 +122,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
                       </div>
                       <h3>{service.name}</h3>
                       <p>{serviceSummaries[index]}</p>
-                      <details className="services-explanation">
+                      <details open className="services-explanation">
                         <summary>How it works</summary>
                         <p>{service.description}</p>
                       </details>
@@ -161,7 +161,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
         </section>
 
         {isAbattoir && (
-          <details className="services-process">
+          <details open className="services-process">
             <summary>
               <span>
                 <strong>See our processing in motion</strong>
@@ -206,7 +206,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
             </button>
           </div>
         </section>
-        <details className="services-hours">
+        <details open className="services-hours">
           <summary>View opening hours</summary>
           <div>
             <p>{KACL_COMPANY_INFO.workingHoursText.monFri}</p>

@@ -34,6 +34,8 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLElement>(null);
   const isActive = (id: string) =>
@@ -47,6 +49,42 @@ export const Header: React.FC<HeaderProps> = ({
     onOpenQuotationDrawer();
   };
 
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const rows = Array.from(header.children).filter(element =>
+      element.classList.contains('nav-utility') || element.classList.contains('nav-main')
+    );
+    const measure = () => {
+      // Reserve only the permanent navigation rows. Opening the mobile menu
+      // overlays the page instead of pushing content down.
+      const height = rows.reduce((total, row) => total + row.getBoundingClientRect().height, 0);
+      if (height > 0) {
+        spacerRef.current?.style.setProperty('height', `${height}px`);
+        header.style.setProperty('--site-header-height', `${height}px`);
+      }
+    };
+    measure();
+    const resize = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    rows.forEach(row => resize?.observe(row));
+    window.addEventListener('resize', measure);
+    return () => { resize?.disconnect(); window.removeEventListener('resize', measure); };
+  }, []);
+
+  useEffect(() => {
+    let frame: number | null = null;
+    const update = () => { setScrolled(window.scrollY > 16); frame = null; };
+    const onScroll = () => {
+      if (frame === null) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -83,7 +121,9 @@ export const Header: React.FC<HeaderProps> = ({
   }, [mobileMenuOpen]);
 
   return (
-    <header className="site-header" ref={headerRef}>
+    <>
+    <div className="site-header-spacer" ref={spacerRef} aria-hidden="true" />
+    <header className={`site-header${scrolled ? ' is-scrolled' : ''}`} ref={headerRef}>
       <div className="nav-utility">
         <div className="page-width nav-utility-inner">
           <div className="nav-utility-about">
@@ -215,5 +255,6 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
       )}
     </header>
+    </>
   );
 };
