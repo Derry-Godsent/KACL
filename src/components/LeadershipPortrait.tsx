@@ -28,10 +28,12 @@ export function LeadershipPortrait({
   name,
   portraitUrl,
   compact = false,
+  priority = false,
 }: {
   name: string;
   portraitUrl?: string;
   compact?: boolean;
+  priority?: boolean;
 }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const hasPhoto = Boolean(portraitUrl && failedUrl !== portraitUrl);
@@ -40,12 +42,19 @@ export function LeadershipPortrait({
       className={`leadership-portrait ${compact ? "is-compact" : ""} ${hasPhoto ? "has-photo" : "has-monogram"}`}
     >
       {hasPhoto ? (
+        <picture>
+          {portraitUrl?.startsWith('/images/leadership/') && portraitUrl.endsWith('.jpg') && (
+            <source srcSet={portraitUrl.replace(/\.jpg$/, '.webp')} type="image/webp" />
+          )}
         <img
           src={portraitUrl}
           alt={`Portrait of ${name}`}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          decoding="async"
           onError={() => setFailedUrl(portraitUrl!)}
         />
+        </picture>
       ) : (
         <div className="leadership-monogram" aria-hidden="true">
           <span>{getLeadershipInitials(name)}</span>

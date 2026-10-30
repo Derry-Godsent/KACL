@@ -56,17 +56,40 @@ try {
   const { LeadershipPortrait } = await server.ssrLoadModule("/src/components/LeadershipPortrait.tsx");
   const { KACL_BOARD_MEMBERS, KACL_MANAGEMENT } = await server.ssrLoadModule("/src/data/initialData.ts");
   const about = renderToStaticMarkup(React.createElement(AboutView, { onNavigate: noop }));
-  assert.equal((about.match(/class="board-profile"/g) || []).length, 13);
+  assert.equal((about.match(/class="board-profile"/g) || []).length, 8);
   assert.equal((about.match(/class="management-profile"/g) || []).length, 7);
-  assert.equal((about.match(/class="leadership-monogram"/g) || []).length, 6);
+  assert.equal((about.match(/class="leadership-monogram"/g) || []).length, 1);
   assert.equal(KACL_BOARD_MEMBERS.filter(member => member.portraitUrl).length, 8);
   const boardMarkup = about.slice(about.indexOf('class="board-portrait-grid"'), about.indexOf('class="about-management"'));
-  const firstPlaceholder = Math.min(...KACL_BOARD_MEMBERS.filter(member => !member.portraitUrl).map(member => boardMarkup.indexOf(member.name)));
-  for (const member of KACL_BOARD_MEMBERS.filter(member => member.portraitUrl)) {
-    assert.ok(boardMarkup.indexOf(member.name) < firstPlaceholder, `${member.name} must precede placeholder profiles`);
+  assert.equal((boardMarkup.match(/loading="eager"/g) || []).length, 2);
+  assert.equal((boardMarkup.match(/fetchPriority="high"/g) || []).length, 2);
+  for (const member of [...KACL_BOARD_MEMBERS, ...KACL_MANAGEMENT].filter(member => member.portraitUrl)) {
+    const optimized = member.portraitUrl.replace(/\.jpg$/, '.webp');
+    assert.ok(readFileSync(`public${optimized}`).length > 0);
+    assert.ok(about.includes(optimized));
   }
 
-  assert.equal(new Set(KACL_BOARD_MEMBERS.map(member => member.name)).size, 13);
+  assert.deepEqual(KACL_BOARD_MEMBERS.map(member => [member.role, member.name]), [
+    ['Chairman', 'Mr. Opoku Da-Rocha'],
+    ['Secretary', 'Mr. Henry Oracca-Tetteh'],
+    ['Member', 'Mr. Abdul Rauf Saeed'],
+    ['Member', 'Alhaji Abdulai Tahiru Ansah'],
+    ['Member', 'Rev. Joseph Amo'],
+    ['Member', 'Mr. Zakaria Mohammed'],
+    ['Member', 'Mr. Sampson Sulemana'],
+    ['Member', 'Mr. Sumaila Seidu'],
+  ]);
+  for (let i = 1; i < KACL_BOARD_MEMBERS.length; i++) {
+    assert.ok(boardMarkup.indexOf(KACL_BOARD_MEMBERS[i - 1].name) < boardMarkup.indexOf(KACL_BOARD_MEMBERS[i].name));
+  }
+  assert.ok(about.indexOf('class="about-intro"') < about.indexOf('class="about-board"'));
+  assert.ok(about.indexOf('class="about-board"') < about.indexOf('class="about-management"'));
+  assert.ok(about.indexOf('class="about-management"') < about.indexOf('class="about-story"'));
+  for (const former of ['Nana Opoku-Agyemang', 'Andrews Kofi Nti', 'Hon. Nana Yaw Wiredu', 'Samuel Pyne', 'Kwasi Kyei', 'Joe Owusu Boadi']) {
+    assert.ok(!about.includes(former));
+  }
+
+  assert.equal(new Set(KACL_BOARD_MEMBERS.map(member => member.name)).size, 8);
   for (const member of KACL_BOARD_MEMBERS.filter(member => member.portraitUrl)) {
     assert.ok(readFileSync(`public${member.portraitUrl}`).length > 0);
     assert.ok(about.includes(member.portraitUrl));
@@ -87,7 +110,7 @@ try {
     })),
   ));
   assert.equal((eightPortraits.match(/<img /g) || []).length, 8);
-  assert.equal((eightPortraits.match(/class="leadership-monogram"/g) || []).length, 5);
+  assert.equal((eightPortraits.match(/class="leadership-monogram"/g) || []).length, 0);
   const { HomeView } = await server.ssrLoadModule("/src/views/HomeView.tsx");
   const { ProductsView } = await server.ssrLoadModule(
     "/src/views/ProductsView.tsx",
@@ -108,6 +131,9 @@ try {
   );
   assert.equal(products.length, 39);
   assert.ok(home.includes("/images/real-rib-steak.jpg"));
+  assert.ok(home.includes('/images/real-rib-steak.webp'));
+  assert.ok(!home.includes('src="/images/real-round-steak.jpg"'));
+  assert.ok(!home.includes('src="/images/real-rib-roast.jpg"'));
   assert.ok(home.includes('class="hero-fullbleed"'));
   assert.ok(home.includes('class="hero-overlay-content page-width"'));
   assert.ok(home.includes('class="hero-progress"'));

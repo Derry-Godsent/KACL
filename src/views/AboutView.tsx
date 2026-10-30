@@ -45,6 +45,59 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => (
         </p>
       </div>
 
+      <section className="about-board" aria-labelledby="about-board-heading">
+        <div className="about-section-heading">
+          <span className="about-kicker">Leadership & governance</span>
+          <h2 id="about-board-heading">Board of Directors</h2>
+          <p>The people guiding KACL's direction and accountability.</p>
+        </div>
+        <div className="board-portrait-grid">
+          {KACL_BOARD_MEMBERS.map((member, index) => (
+            <article className="board-profile" key={member.name}>
+              <LeadershipPortrait
+                name={member.name}
+                portraitUrl={member.portraitUrl}
+                priority={index < 2}
+              />
+              <div className="board-profile-info">
+                <span>{member.role}</span>
+                <h3>{member.name}</h3>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section
+        className="about-management"
+        aria-labelledby="about-management-heading"
+      >
+        <div className="about-section-heading">
+          <span className="about-kicker">The team behind our operations</span>
+          <h2 id="about-management-heading">Executive Management</h2>
+          <p>
+            Working together across production, administration, finance and
+            customer service.
+          </p>
+        </div>
+        <div className="management-profile-grid">
+          {KACL_MANAGEMENT.map((member) => (
+            <article className="management-profile" key={member.name}>
+              <LeadershipPortrait
+                name={member.name}
+                portraitUrl={member.portraitUrl}
+                compact
+              />
+              <div>
+                <span>{member.position}</span>
+                <h3>{member.name}</h3>
+                <p>{member.department}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="about-story" aria-labelledby="about-story-heading">
         <div className="about-section-heading">
           <span className="about-kicker">Our story</span>
@@ -105,60 +158,6 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => (
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="about-board" aria-labelledby="about-board-heading">
-        <div className="about-section-heading">
-          <span className="about-kicker">Leadership & governance</span>
-          <h2 id="about-board-heading">Board of Directors</h2>
-          <p>The people guiding KACL's direction and accountability.</p>
-        </div>
-        <div className="board-portrait-grid">
-          {[...KACL_BOARD_MEMBERS]
-            .sort((a, b) => Number(Boolean(b.portraitUrl)) - Number(Boolean(a.portraitUrl)))
-            .map((member) => (
-            <article className="board-profile" key={member.name}>
-              <LeadershipPortrait
-                name={member.name}
-                portraitUrl={member.portraitUrl}
-              />
-              <div className="board-profile-info">
-                <span>{member.role}</span>
-                <h3>{member.name}</h3>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section
-        className="about-management"
-        aria-labelledby="about-management-heading"
-      >
-        <div className="about-section-heading">
-          <span className="about-kicker">The team behind our operations</span>
-          <h2 id="about-management-heading">Executive Management</h2>
-          <p>
-            Working together across production, administration, finance and
-            customer service.
-          </p>
-        </div>
-        <div className="management-profile-grid">
-          {KACL_MANAGEMENT.map((member) => (
-            <article className="management-profile" key={member.name}>
-              <LeadershipPortrait
-                name={member.name}
-                portraitUrl={member.portraitUrl}
-                compact
-              />
-              <div>
-                <span>{member.position}</span>
-                <h3>{member.name}</h3>
-                <p>{member.department}</p>
-              </div>
-            </article>
-          ))}
-        </div>
       </section>
 
       <section

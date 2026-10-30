@@ -9,3 +9,5 @@ coverage/
 
 # Local image sourcing scratch files
 image-search/
+
+.venv/

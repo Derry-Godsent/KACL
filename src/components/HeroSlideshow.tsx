@@ -29,6 +29,7 @@ const slides = [
 ];
 
 export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
+  const [firstImageSettled, setFirstImageSettled] = useState(false);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -94,8 +95,13 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
             className={`hero-slide ${index === active ? "is-active" : ""}`}
             aria-hidden={index !== active}
           >
+            {(index === 0 || firstImageSettled || index === active) && (
+            <picture>
+            <source srcSet={item.src.replace(/\.jpg$/, '.webp')} type="image/webp" />
             <img
               src={item.src}
+              onLoad={index === 0 ? () => setFirstImageSettled(true) : undefined}
+              onError={index === 0 ? () => setFirstImageSettled(true) : undefined}
               alt={index === active ? item.alt : ""}
               fetchPriority={index === 0 ? "high" : "auto"}
               decoding="async"
@@ -105,6 +111,8 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
                   : "hero-slide-image"
               }
             />
+            </picture>
+            )}
           </div>
         ))}
       </div>

@@ -51,19 +51,14 @@ export const KACL_CORE_VALUES = [
 ];
 
 export const KACL_BOARD_MEMBERS: BoardMember[] = [
-  { role: 'Chairman', name: 'Nana Opoku-Agyemang', portraitUrl: '/images/leadership/board-chairman.jpg' },
-  { role: 'Secretary', name: 'Henry Orraca Tetteh, Esq.', portraitUrl: '/images/leadership/henry-orraca-tetteh.jpg' },
-  { role: 'Member', name: 'Andrews Kofi Nti' },
-  { role: 'Member', name: 'Hon. Nana Yaw Wiredu' },
-  { role: 'Member', name: 'Samuel Pyne' },
-  { role: 'Member', name: 'Kwasi Kyei' },
-  { role: 'Member', name: 'Joe Owusu Boadi' },
-  { role: 'Member', name: 'Sulemana Sampson', portraitUrl: '/images/leadership/sulemana-sampson.jpg' },
-  { role: 'Member', name: 'Sumaila Seidu', portraitUrl: '/images/leadership/sumaila-seidu.jpg' },
-  { role: 'Member', name: 'Alhaji Abdulai Thahiru', portraitUrl: '/images/leadership/abdulai-thahiru.jpg' },
+  { role: 'Chairman', name: 'Mr. Opoku Da-Rocha', portraitUrl: '/images/leadership/board-chairman.jpg' },
+  { role: 'Secretary', name: 'Mr. Henry Oracca-Tetteh', portraitUrl: '/images/leadership/henry-orraca-tetteh.jpg' },
   { role: 'Member', name: 'Mr. Abdul Rauf Saeed', portraitUrl: '/images/leadership/abdul-rauf-saeed.jpg' },
+  { role: 'Member', name: 'Alhaji Abdulai Tahiru Ansah', portraitUrl: '/images/leadership/abdulai-thahiru.jpg' },
+  { role: 'Member', name: 'Rev. Joseph Amo', portraitUrl: '/images/leadership/joseph-amo.jpg' },
   { role: 'Member', name: 'Mr. Zakaria Mohammed', portraitUrl: '/images/leadership/zakaria-mohammed.jpg' },
-  { role: 'Member', name: 'Rev. Joseph Amo', portraitUrl: '/images/leadership/joseph-amo.jpg' }
+  { role: 'Member', name: 'Mr. Sampson Sulemana', portraitUrl: '/images/leadership/sulemana-sampson.jpg' },
+  { role: 'Member', name: 'Mr. Sumaila Seidu', portraitUrl: '/images/leadership/sumaila-seidu.jpg' }
 ];
 
 export const KACL_MANAGEMENT: ManagementMember[] = [

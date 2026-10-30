@@ -3846,3 +3846,11 @@
 @media (prefers-reduced-motion: no-preference) {
   .site-header { animation: navigation-settle 600ms cubic-bezier(.16,1,.3,1) backwards; }
 }
+
+/* Picture wrappers preserve the original full-size photo framing. */
+.hero-slide > picture,
+.leadership-portrait > picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
