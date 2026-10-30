@@ -3,7 +3,7 @@ from pathlib import Path
 from PIL import Image, ImageOps
 
 root = Path(__file__).resolve().parents[1] / 'public/images'
-sources = list((root / 'leadership').glob('*.jpg')) + list(root.glob('real-*.jpg'))
+sources = list((root / 'leadership').glob('*.jpg')) + list(root.glob('real-*.jpg')) + list(root.glob('kacl-executive.jpeg'))
 before = after = 0
 for source in sources:
     with Image.open(source) as original:

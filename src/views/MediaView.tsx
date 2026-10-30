@@ -178,12 +178,12 @@ export const MediaView: React.FC<MediaViewProps> = ({ onNavigate }) => {
               </span>
               <h2>
                 {activeTab === "gallery"
-                  ? "A closer look at KACL, coming soon."
-                  : "More updates are on the way."}
+                  ? "Gallery"
+                  : "No updates in this category."}
               </h2>
               <p>
                 {activeTab === "gallery"
-                  ? "Our gallery will feature real photographs of our premises, products and services once approved for publication."
+                  ? "There are no photographs in the gallery yet."
                   : "There are no published updates in this category yet."}
               </p>
               <button

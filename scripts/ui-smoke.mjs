@@ -216,6 +216,42 @@ try {
   assert.ok(!/Staff portal|Protected Staff Administration/.test(header + footer));
   assert.ok(!readFileSync('src/App.tsx', 'utf8').includes('StaffCmsView'));
 
+  const { ReportsView } = await server.ssrLoadModule('/src/views/ReportsView.tsx');
+  const reports = renderToStaticMarkup(React.createElement(ReportsView));
+  for (const file of ['kacl-annual-report-2025.pdf', 'kacl-right-to-information-manual.pdf']) {
+    assert.ok(reports.includes(`/documents/${file}`));
+    assert.ok(readFileSync(`public/documents/${file}`).subarray(0, 5).toString() === '%PDF-');
+  }
+  assert.equal((reports.match(/download="kacl-[^"]+\.pdf"/g) || []).length, 2);
+  assert.ok(!reports.includes('target="_blank"'));
+  assert.equal((reports.match(/class="report-cover"/g) || []).length, 2);
+  for (const name of ['kacl-annual-report-2025', 'kacl-right-to-information-manual']) {
+    assert.ok(reports.includes(`/images/reports/${name}.webp`));
+    assert.ok(readFileSync(`public/images/reports/${name}.webp`).length > 0);
+  }
+
+  assert.ok(header.includes('>Reports</button>'));
+  assert.equal(resolveNavigation('outlets').view, 'outlets');
+  const { INITIAL_OUTLETS } = await server.ssrLoadModule('/src/data/initialData.ts');
+  const { OutletsView } = await server.ssrLoadModule('/src/views/OutletsView.tsx');
+  const outlets = renderToStaticMarkup(React.createElement(OutletsView, { outlets: INITIAL_OUTLETS, onNavigate: noop }));
+  assert.deepEqual(INITIAL_OUTLETS.map(outlet => outlet.name), [
+    'Kumasi Abattoir Container Meat Shop', 'Poku Trading, Adum',
+    'JP Filling Station-Ahinsan', 'JP Filling Station-KNUST', 'KNUST Commercial Center',
+  ]);
+  for (const outlet of INITIAL_OUTLETS) {
+    assert.ok(outlets.includes(outlet.name));
+    assert.ok(footer.includes(outlet.name));
+  }
+  assert.ok(footer.includes('Food and Drugs Authority, Veterinary Services Department'));
+  assert.ok(!footer.includes('AK-039-4412'));
+  const heroSource = readFileSync('src/components/HeroSlideshow.tsx', 'utf8');
+  assert.ok(heroSource.includes('/images/kacl-executive.jpeg'));
+  assert.ok(!heroSource.includes('Supplied by KACL'));
+  assert.ok(!reports.includes('published as supplied'));
+  assert.ok(!readFileSync('src/views/MediaView.tsx', 'utf8').includes('once approved for publication'));
+  assert.ok(readFileSync('public/images/kacl-executive.webp').length > 0);
+
   const documentHead = readFileSync('index.html', 'utf8');
   assert.ok(documentHead.includes('rel="icon" type="image/jpeg" href="/images/brand/cow-tab-icon.jpg"'));
   assert.ok(!readFileSync('src/index.css', 'utf8').includes('nav-brand-monogram'));

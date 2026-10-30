@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
-import { KACL_COMPANY_INFO } from '../data/initialData';
+import { KACL_COMPANY_INFO, INITIAL_OUTLETS } from '../data/initialData';
 
 interface FooterProps {
   onNavigate: (view: string) => void;
@@ -43,12 +43,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </button>
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Established under Act 179 to provide modern, hygienic, and veterinary-supervised meat processing in the Ashanti Region. Operating in partnership with the Veterinary Services Directorate and the Kumasi Metropolitan Assembly.
+              Established under Act 179 to provide modern, hygienic, and veterinary-supervised meat processing in the Ashanti Region.
             </p>
             <div className="pt-2 text-xs text-slate-400 space-y-1">
               <div>
                 <span className="text-slate-500">Supervisory Body:</span>{' '}
-                <span className="text-slate-300">Veterinary Services Directorate (MoFA)</span>
+                <span className="text-slate-300">Ministry of Food &amp; Agriculture, Food and Drugs Authority, Veterinary Services Department</span>
               </div>
               <div>
                 <span className="text-slate-500">Facility Location:</span>{' '}
@@ -60,49 +60,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Column 2: Facility & Outlets */}
           <div className="space-y-3">
             <h4 className="text-white font-semibold text-sm">
-              Retail Outlets & Depots
+              Our Meat Outlets
             </h4>
             <ul className="text-xs space-y-2 text-slate-400">
-              <li>
-                <button
-                  onClick={() => onNavigate('outlets')}
-                  className="hover:text-white transition-colors text-left cursor-pointer"
-                >
-                  Kaase Main Complex Butcher Outlet (AK-373-6444)
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('outlets')}
-                  className="hover:text-white transition-colors text-left cursor-pointer"
-                >
-                  Central Market Wholesale Meat House (AK-039-4412)
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('outlets')}
-                  className="hover:text-white transition-colors text-left cursor-pointer"
-                >
-                  Bantama High Street Depot (AK-112-7809)
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('outlets')}
-                  className="hover:text-white transition-colors text-left cursor-pointer"
-                >
-                  Kejetia Market Northern Wing Depot (AK-005-2231)
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('outlets')}
-                  className="hover:text-white transition-colors text-left cursor-pointer"
-                >
-                  Asafo Interchange Meat Centre (AK-150-6188)
-                </button>
-              </li>
+              {INITIAL_OUTLETS.map(outlet => (
+                <li key={outlet.id}>
+                  <button onClick={() => onNavigate('outlets')} className="hover:text-white transition-colors text-left cursor-pointer">
+                    {outlet.name}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -163,6 +130,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               Governance & Policies
             </h4>
             <ul className="text-xs space-y-2 text-slate-400">
+              <li>
+                <button onClick={() => onNavigate('reports')} className="hover:text-white transition-colors text-left cursor-pointer">
+                  Reports &amp; Public Information
+                </button>
+              </li>
               <li>
                 <button
                   onClick={() => onNavigate('privacy-policy')}

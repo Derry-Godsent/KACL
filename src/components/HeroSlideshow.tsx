@@ -26,6 +26,14 @@ const slides = [
     author: "Michael C. Berch",
     source: "https://commons.wikimedia.org/wiki/File:Standing-rib-roast.jpg",
   },
+  {
+    src: "/images/kacl-executive.jpeg",
+    title: "The KACL team",
+    caption: "The people behind our commitment.",
+    alt: "KACL group photograph in front of a Kumasi Abattoir branded vehicle",
+    author: "Kumasi Abattoir Company Limited",
+    source: "",
+  },
 ];
 
 export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
@@ -97,7 +105,7 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
           >
             {(index === 0 || firstImageSettled || index === active) && (
             <picture>
-            <source srcSet={item.src.replace(/\.jpg$/, '.webp')} type="image/webp" />
+            <source srcSet={item.src.replace(/\.jpe?g$/, '.webp')} type="image/webp" />
             <img
               src={item.src}
               onLoad={index === 0 ? () => setFirstImageSettled(true) : undefined}
@@ -134,7 +142,7 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
             <button
               type="button"
               onClick={() => select(active - 1)}
-              aria-label="Previous meat photograph"
+              aria-label="Previous photograph"
             >
               Previous
             </button>
@@ -157,7 +165,7 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
             <button
               type="button"
               onClick={() => select(active + 1)}
-              aria-label="Next meat photograph"
+              aria-label="Next photograph"
             >
               Next
             </button>
@@ -166,7 +174,7 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
         <div
           className="hero-progress"
           role="group"
-          aria-label="Choose a meat photograph"
+          aria-label="Choose a photograph"
         >
           {slides.map((item, index) => (
             <button
@@ -182,6 +190,7 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
           ))}
         </div>
         <p className="hero-photo-credit">
+          {slide.source ? <>
           Illustrative photography ·{" "}
           <a href={slide.source} target="_blank" rel="noreferrer">
             {slide.author}
@@ -195,6 +204,7 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
             CC BY-SA 2.5
           </a>{" "}
           · Cropped. Not a KACL product photograph.
+          </> : <>Kumasi Abattoir Company Limited</>}
         </p>
       </div>
       <span className="sr-only" role="status" aria-live="polite">

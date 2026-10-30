@@ -22,6 +22,8 @@ import { DeliveryView } from './views/DeliveryView';
 import { NoticesView } from './views/NoticesView';
 import { ContactView } from './views/ContactView';
 import { PoliciesView } from './views/PoliciesView';
+import { INITIAL_OUTLETS } from './data/initialData';
+import { ReportsView } from './views/ReportsView';
 import { MediaView } from './views/MediaView';
 
 // Data & Storage
@@ -183,6 +185,9 @@ export default function App() {
             quotationItemCount={quotationItems.length}
           />
         )}
+
+        {currentView === 'reports' && <ReportsView />}
+        {currentView === 'outlets' && <OutletsView outlets={INITIAL_OUTLETS} onNavigate={handleNavigate} />}
 
         {currentView === 'food-safety' && <FoodSafetyView onNavigate={handleNavigate} />}
 

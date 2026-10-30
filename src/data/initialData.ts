@@ -722,51 +722,17 @@ export const INITIAL_SERVICES: ServiceItem[] = [
 ];
 
 export const INITIAL_OUTLETS: RetailOutlet[] = [
-  {
-    id: 'outlet-001',
-    name: 'KACL Main Complex Butchery Outlet',
-    locationArea: 'Kaase / Ahinsan Industrial Area, Kumasi',
-    ghanaPostAddress: 'AK-373-6444',
-    landmark: 'Main Administration & Dispatch Bay, Kumasi Abattoir Complex',
-    phoneNumber: '0202 015 746',
-    operatingHours: 'Mon to Fri: 8am - 5pm. Sat: 8am - 4pm. Sun: 8am - 2pm.',
-    cutsAvailable: 'Full beef cuts, mutton/chevon, pork cuts, and processed sausages',
-    deliveryPickupAvailable: true
-  },
-  {
-    id: 'outlet-002',
-    name: 'Poku Trading Partner Deep Freezers',
-    locationArea: 'Kumasi Metropolis Partner Stores',
-    ghanaPostAddress: 'AK-039-4412',
-    landmark: 'Poku Trading Supermarket Meat Freezers, Kumasi',
-    phoneNumber: '0577 361 460',
-    operatingHours: 'Monday to Saturday: 8:00 AM - 6:00 PM',
-    cutsAvailable: 'Vacuum-packed prime cuts, minced beef, burger patties, beef sausages',
-    deliveryPickupAvailable: true
-  },
-  {
-    id: 'outlet-003',
-    name: 'KATH Institutional Supply Desk',
-    locationArea: 'Komfo Anokye Hospital Receiving Dock',
-    ghanaPostAddress: 'AK-001-9988',
-    landmark: 'Komfo Anokye Teaching Hospital Receiving Dock, Kumasi',
-    phoneNumber: '0577 361 443',
-    operatingHours: 'Scheduled Institutional Van Delivery Runs',
-    cutsAvailable: 'Contract lean stew beef, boneless beef, hospital catering portions',
-    deliveryPickupAvailable: true
-  },
-  {
-    id: 'outlet-004',
-    name: 'KNUST Institutional Supply Desk',
-    locationArea: 'KNUST Campus Commercial Gate',
-    ghanaPostAddress: 'AK-088-2100',
-    landmark: 'KNUST Canteen and Staff Receiving Center',
-    phoneNumber: '0577 361 444',
-    operatingHours: 'Scheduled Institutional Van Delivery Runs',
-    cutsAvailable: 'Bulk catering cubes, beef quarters, minced beef, processed sausages',
-    deliveryPickupAvailable: true
-  }
-];
+  'Kumasi Abattoir Container Meat Shop',
+  'Poku Trading, Adum',
+  'JP Filling Station-Ahinsan',
+  'JP Filling Station-KNUST',
+  'KNUST Commercial Center',
+].map((name, index) => ({
+  id: `outlet-${String(index + 1).padStart(3, '0')}`,
+  name,
+  locationArea: '', ghanaPostAddress: '', landmark: '', phoneNumber: '',
+  operatingHours: '', cutsAvailable: '', deliveryPickupAvailable: false,
+}));
 
 export const INITIAL_NOTICES: PublicNotice[] = [
   {

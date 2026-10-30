@@ -15,7 +15,7 @@ export function resolveNavigation(destination: string) {
     return { view: 'services', category: null, targetId: detail };
   }
   return {
-    view: view === 'outlets' ? 'contact' : view === 'notices' ? 'media' : view,
+    view: view === 'notices' ? 'media' : view,
     category: null,
     targetId: null,
   };

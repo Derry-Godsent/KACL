@@ -22,6 +22,7 @@ const navLinks = [
   { id: "services", label: "Our Services" },
   { id: "products", label: "Products" },
   { id: "media", label: "Media" },
+  { id: "reports", label: "Reports" },
   { id: "about", label: "About KACL" },
   { id: "contact", label: "Contact Us" },
 ];
