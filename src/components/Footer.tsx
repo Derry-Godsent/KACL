@@ -19,6 +19,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal })
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Column 1: Organization & Mandate */}
           <div className="space-y-4">
+            <button
+              type="button"
+              onClick={() => onNavigate('home')}
+              aria-label="Kumasi Abattoir Company Limited home"
+              className="block cursor-pointer rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300"
+            >
             <img
               src="/images/brand/kacl-logo.png"
               alt="Kumasi Abattoir Company Limited logo"
@@ -27,8 +33,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal })
               className="h-[88px] w-[88px] object-contain"
               loading="lazy"
             />
+            </button>
             <h3 className="text-white font-bold text-base tracking-tight">
-              Kumasi Abattoir Company Limited
+              <button
+                type="button"
+                onClick={() => onNavigate('home')}
+                className="text-left cursor-pointer rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300"
+              >
+                Kumasi Abattoir Company Limited
+              </button>
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed">
               Established under Act 179 to provide modern, hygienic, and veterinary-supervised meat processing in the Ashanti Region. Operating in partnership with the Veterinary Services Directorate and the Kumasi Metropolitan Assembly.
