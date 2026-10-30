@@ -31,6 +31,27 @@ try {
   assert.ok(contact.includes('https://maps.google.com/maps?q='));
   assert.ok(contact.indexOf('class="contact-map"') < contact.indexOf('class="contact-intro"'));
   assert.ok(contact.includes('Open in Google Maps'));
+  const { PoliciesView } = await server.ssrLoadModule('/src/views/PoliciesView.tsx');
+  for (const tab of ['privacy', 'refund']) {
+    const policy = renderToStaticMarkup(React.createElement(PoliciesView, {
+      initialTab: tab, onNavigate: noop,
+    }));
+    assert.ok(policy.includes('policies-page'));
+    assert.ok(policy.includes('aria-label="Choose a policy"'));
+    assert.equal((policy.match(/aria-pressed="true"/g) || []).length, 1);
+    assert.equal((policy.match(/<section/g) || []).length, 5);
+    assert.ok(policy.includes('mailto:'));
+    assert.ok(policy.includes('tel:'));
+    if (tab === 'privacy') {
+      assert.ok(policy.includes('1 January 2026'));
+      assert.ok(policy.includes('Data Protection Act, 2012 (Act 843)'));
+      assert.ok(policy.includes('Data Confidentiality'));
+    } else {
+      assert.ok(policy.includes('0°C to 4°C'));
+      assert.ok(policy.includes('within 24 hours'));
+      assert.ok(policy.includes('Post-Acceptance Limitation'));
+    }
+  }
   const { AboutView } = await server.ssrLoadModule("/src/views/AboutView.tsx");
   const { LeadershipPortrait } = await server.ssrLoadModule("/src/components/LeadershipPortrait.tsx");
   const { KACL_BOARD_MEMBERS, KACL_MANAGEMENT } = await server.ssrLoadModule("/src/data/initialData.ts");
@@ -143,6 +164,17 @@ try {
       onOpenStaffPortal: noop,
     }),
   );
+  assert.ok(header.includes('/images/brand/kacl-logo.png'));
+  assert.ok(!header.includes('nav-brand-monogram'));
+  assert.ok(readFileSync('public/images/brand/kacl-logo.png').length > 0);
+  const { Footer } = await server.ssrLoadModule('/src/components/Footer.tsx');
+  const footer = renderToStaticMarkup(React.createElement(Footer, {
+    onNavigate: noop, onOpenStaffPortal: noop,
+  }));
+  assert.ok(footer.includes('/images/brand/kacl-logo.png'));
+  const documentHead = readFileSync('index.html', 'utf8');
+  assert.ok(documentHead.includes('rel="icon" type="image/jpeg" href="/images/brand/cow-tab-icon.jpg"'));
+  assert.ok(!readFileSync('src/index.css', 'utf8').includes('nav-brand-monogram'));
   assert.match(header, /aria-current="page"[^>]*>Our Services/);
   assert.ok(
     !readFileSync(

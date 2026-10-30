@@ -174,11 +174,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF9F5] text-[#0C141D]">
+    <div className="min-h-screen flex flex-col bg-[#f7fbff] text-[#0C141D]">
       {/* Global Accessibility Skip Link */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:p-3 focus:bg-white focus:text-[#143D2B] focus:font-bold focus:shadow"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:p-3 focus:bg-white focus:text-[#0756a3] focus:font-bold focus:shadow"
       >
         Skip to main content
       </a>

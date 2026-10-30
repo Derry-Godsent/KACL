@@ -14,11 +14,19 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal }) => {
   return (
-    <footer className="bg-[#06180E] text-slate-300 border-t border-[#0E3321]">
+    <footer className="bg-[#071e38] text-slate-300 border-t border-[#083d73]">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Column 1: Organization & Mandate */}
           <div className="space-y-4">
+            <img
+              src="/images/brand/kacl-logo.png"
+              alt="Kumasi Abattoir Company Limited logo"
+              width={88}
+              height={88}
+              className="h-[88px] w-[88px] object-contain"
+              loading="lazy"
+            />
             <h3 className="text-white font-bold text-base tracking-tight">
               Kumasi Abattoir Company Limited
             </h3>
@@ -93,7 +101,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal })
             </h4>
             <div className="text-xs space-y-2.5 text-slate-400">
               <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
                 <span>
                   {KACL_COMPANY_INFO.headquarters}
                   <br />
@@ -103,19 +111,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal })
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+                <Phone className="w-4 h-4 text-sky-400 shrink-0" />
                 <a href={`tel:${KACL_COMPANY_INFO.primaryPhone}`} className="hover:text-white font-mono">
                   {KACL_COMPANY_INFO.primaryPhone}
                 </a>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
+                <Mail className="w-4 h-4 text-sky-400 shrink-0" />
                 <a href={`mailto:${KACL_COMPANY_INFO.email}`} className="hover:text-white">
                   {KACL_COMPANY_INFO.email}
                 </a>
               </div>
               <div className="flex items-start gap-2 pt-1">
-                <Clock className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <Clock className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
                 <span className="text-[11px] leading-tight text-slate-400 font-mono">
                   {KACL_COMPANY_INFO.workingHoursText.monFri} · {KACL_COMPANY_INFO.workingHoursText.sat} · {KACL_COMPANY_INFO.workingHoursText.sun}
                 </span>
@@ -164,7 +172,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal })
               <li className="pt-2">
                 <button
                   onClick={onOpenStaffPortal}
-                  className="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-white font-medium cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs text-sky-400 hover:text-white font-medium cursor-pointer"
                 >
                   <Shield className="w-3.5 h-3.5" />
                   <span>Protected Staff Administration</span>
@@ -176,7 +184,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStaffPortal })
         </div>
 
         {/* Bottom Copyright Bar */}
-        <div className="mt-12 pt-6 border-t border-[#13422B] flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+        <div className="mt-12 pt-6 border-t border-[#0756a3] flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-400">
           <div>
             &copy; {new Date().getFullYear()} Kumasi Abattoir Company Limited. All rights reserved.
           </div>

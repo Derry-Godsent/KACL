@@ -13,8 +13,8 @@ export const FoodSafetyView: React.FC<{
       Doctors.
     </p>
     <div className="grid md:grid-cols-2 gap-8">
-      <section className="border border-[#dbe1d5] rounded p-8 space-y-4">
-        <ShieldCheck className="w-8 h-8 text-[#174b32]" />
+      <section className="border border-[#c5dbf1] rounded p-8 space-y-4">
+        <ShieldCheck className="w-8 h-8 text-[#0756a3]" />
         <h2 className="text-2xl">Veterinary inspection</h2>
         <p>
           Veterinary Doctors inspect carcasses and certify those found wholesome
@@ -22,8 +22,8 @@ export const FoodSafetyView: React.FC<{
           singeing, dressing and cutting services.
         </p>
       </section>
-      <section className="border border-[#dbe1d5] rounded p-8 space-y-4">
-        <AlertTriangle className="w-8 h-8 text-[#174b32]" />
+      <section className="border border-[#c5dbf1] rounded p-8 space-y-4">
+        <AlertTriangle className="w-8 h-8 text-[#0756a3]" />
         <h2 className="text-2xl">When a carcass is unwholesome</h2>
         <p>
           Any carcass found unwholesome by Veterinary Doctors is condemned,

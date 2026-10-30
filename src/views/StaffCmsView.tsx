@@ -205,7 +205,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
         {/* Top CMS Bar */}
         <div className="bg-[#0F172A] text-white px-4 sm:px-8 py-3.5 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            <ShieldCheck className="w-5 h-5 text-sky-400" />
             <div>
               <span className="font-bold text-sm tracking-tight">KACL Protected Staff Administration</span>
               <span className="text-slate-400 text-xs hidden sm:inline ml-2">
@@ -260,7 +260,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
             /* Staff Login Form */
             <div className="max-w-md mx-auto my-12 bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm space-y-6">
               <div className="text-center space-y-2">
-                <div className="w-10 h-10 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-[#143D2B]">
+                <div className="w-10 h-10 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-[#0756a3]">
                   <Lock className="w-5 h-5" />
                 </div>
                 <h1 className="text-lg font-bold text-[#0F172A]">KACL Staff Access Authentication</h1>
@@ -283,7 +283,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                     type="text"
                     value={loginUsername}
                     onChange={(e) => setLoginUsername(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#143D2B]"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#0756a3]"
                   />
                 </div>
 
@@ -294,7 +294,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                     type="password"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#143D2B]"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#0756a3]"
                   />
                 </div>
 
@@ -310,13 +310,13 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                     value={loginMfa}
                     onChange={(e) => setLoginMfa(e.target.value)}
                     placeholder="482910"
-                    className="w-full px-3 py-2 text-xs font-mono tracking-widest border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#143D2B]"
+                    className="w-full px-3 py-2 text-xs font-mono tracking-widest border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#0756a3]"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-[#143D2B] hover:bg-[#1E5A3D] text-white text-xs font-semibold rounded cursor-pointer transition-colors"
+                  className="w-full py-2.5 bg-[#0756a3] hover:bg-[#1e3c5a] text-white text-xs font-semibold rounded cursor-pointer transition-colors"
                 >
                   Authenticate & Sign In
                 </button>
@@ -339,7 +339,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                     onClick={() => setActiveTab('inquiries')}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                       activeTab === 'inquiries'
-                        ? 'bg-[#143D2B] text-white shadow-xs'
+                        ? 'bg-[#0756a3] text-white shadow-xs'
                         : 'bg-white text-slate-700 hover:bg-slate-200/70 border border-slate-200'
                     }`}
                   >
@@ -354,7 +354,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                     onClick={() => setActiveTab('products')}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                       activeTab === 'products'
-                        ? 'bg-[#143D2B] text-white shadow-xs'
+                        ? 'bg-[#0756a3] text-white shadow-xs'
                         : 'bg-white text-slate-700 hover:bg-slate-200/70 border border-slate-200'
                     }`}
                   >
@@ -366,7 +366,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                     onClick={() => setActiveTab('notices')}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                       activeTab === 'notices'
-                        ? 'bg-[#143D2B] text-white shadow-xs'
+                        ? 'bg-[#0756a3] text-white shadow-xs'
                         : 'bg-white text-slate-700 hover:bg-slate-200/70 border border-slate-200'
                     }`}
                   >
@@ -378,7 +378,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                     onClick={() => setActiveTab('outlets')}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                       activeTab === 'outlets'
-                        ? 'bg-[#143D2B] text-white shadow-xs'
+                        ? 'bg-[#0756a3] text-white shadow-xs'
                         : 'bg-white text-slate-700 hover:bg-slate-200/70 border border-slate-200'
                     }`}
                   >
@@ -391,7 +391,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                       onClick={() => setActiveTab('audit')}
                       className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                         activeTab === 'audit'
-                          ? 'bg-[#143D2B] text-white shadow-xs'
+                          ? 'bg-[#0756a3] text-white shadow-xs'
                           : 'bg-white text-slate-700 hover:bg-slate-200/70 border border-slate-200'
                       }`}
                     >
@@ -451,7 +451,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                         <tbody className="divide-y divide-slate-100">
                           {filteredInquiries.map((inq) => (
                             <tr key={inq.id} className="hover:bg-slate-50/70 transition-colors">
-                              <td className="p-3 font-mono font-bold text-[#143D2B]">
+                              <td className="p-3 font-mono font-bold text-[#0756a3]">
                                 {inq.referenceNumber}
                               </td>
                               <td className="p-3 text-slate-500 font-mono">
@@ -478,7 +478,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                                       : inq.status === 'reviewed'
                                       ? 'bg-blue-100 text-blue-900'
                                       : inq.status === 'quoted'
-                                      ? 'bg-emerald-100 text-emerald-900'
+                                      ? 'bg-sky-100 text-sky-900'
                                       : 'bg-slate-100 text-slate-800'
                                   }`}
                                 >
@@ -510,7 +510,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                       <div className="bg-white border border-slate-200 rounded-lg max-w-xl w-full p-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto">
                         <div className="flex justify-between items-start border-b border-slate-100 pb-3">
                           <div>
-                            <span className="font-mono text-xs font-bold text-[#143D2B]">
+                            <span className="font-mono text-xs font-bold text-[#0756a3]">
                               {selectedInquiry.referenceNumber}
                             </span>
                             <h3 className="text-base font-bold text-slate-900">
@@ -556,7 +556,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                             <select
                               value={statusUpdateVal}
                               onChange={(e) => setStatusUpdateVal(e.target.value as CustomerInquiry['status'])}
-                              className="w-full px-3 py-1.5 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#143D2B]"
+                              className="w-full px-3 py-1.5 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#0756a3]"
                             >
                               <option value="new">NEW (Unreviewed)</option>
                               <option value="reviewed">REVIEWED (Contact initiated)</option>
@@ -573,7 +573,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                               value={internalNoteVal}
                               onChange={(e) => setInternalNoteVal(e.target.value)}
                               placeholder="Record quote issued, driver assigned, or customer feedback..."
-                              className="w-full px-3 py-1.5 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#143D2B]"
+                              className="w-full px-3 py-1.5 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-[#0756a3]"
                             />
                           </div>
                         </div>
@@ -587,7 +587,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                           </button>
                           <button
                             onClick={handleSaveInquiryStatus}
-                            className="px-4 py-2 bg-[#143D2B] hover:bg-[#1E5A3D] text-white text-xs font-semibold rounded cursor-pointer"
+                            className="px-4 py-2 bg-[#0756a3] hover:bg-[#1e3c5a] text-white text-xs font-semibold rounded cursor-pointer"
                           >
                             Save Updates
                           </button>
@@ -629,7 +629,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                             <td className="p-3 text-slate-600">{p.storageRequirement}</td>
                             <td className="p-3 text-slate-600">{p.packagingType}</td>
                             <td className="p-3">
-                              <span className="text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded text-[10px]">
+                              <span className="text-sky-800 font-semibold bg-sky-50 px-2 py-0.5 rounded text-[10px]">
                                 Active Available
                               </span>
                             </td>
@@ -651,7 +651,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                     </div>
                     <button
                       onClick={() => setShowNewNoticeModal(true)}
-                      className="px-3 py-1.5 bg-[#143D2B] hover:bg-[#1E5A3D] text-white text-xs font-semibold rounded cursor-pointer"
+                      className="px-3 py-1.5 bg-[#0756a3] hover:bg-[#1e3c5a] text-white text-xs font-semibold rounded cursor-pointer"
                     >
                       Publish New Advisory
                     </button>
@@ -752,7 +752,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                             </button>
                             <button
                               type="submit"
-                              className="px-4 py-2 bg-[#143D2B] text-white rounded cursor-pointer"
+                              className="px-4 py-2 bg-[#0756a3] text-white rounded cursor-pointer"
                             >
                               Publish Notice
                             </button>
@@ -797,7 +797,7 @@ export const StaffCmsView: React.FC<StaffCmsViewProps> = ({
                       <div key={log.id} className="p-3 bg-slate-50 border border-slate-200 rounded flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-[#143D2B]">{log.action}</span>
+                            <span className="font-mono font-bold text-[#0756a3]">{log.action}</span>
                             <span className="text-slate-400">·</span>
                             <span className="text-slate-700 font-semibold">{log.user}</span>
                           </div>

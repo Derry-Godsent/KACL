@@ -128,9 +128,13 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={() => handleNavigate("home")}
           aria-label="Kumasi Abattoir Company Limited home"
         >
-          <span className="nav-brand-monogram" aria-hidden="true">
-            KACL
-          </span>
+          <img
+            className="nav-brand-logo"
+            src="/images/brand/kacl-logo.png"
+            alt="Kumasi Abattoir Company Limited logo"
+            width={60}
+            height={60}
+          />
           <span className="nav-brand-name">
             <strong>Kumasi Abattoir</strong>
             <span>Company Limited</span>
