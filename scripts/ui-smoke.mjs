@@ -254,6 +254,34 @@ try {
   assert.ok(!readFileSync('src/views/MediaView.tsx', 'utf8').includes('once approved for publication'));
   assert.ok(readFileSync('public/images/kacl-executive.webp').length > 0);
 
+  const { OfficialUpdates } = await server.ssrLoadModule('/src/components/OfficialUpdates.tsx');
+  const { OFFICIAL_UPDATES } = await server.ssrLoadModule('/src/data/officialUpdates.ts');
+  const officialUpdates = renderToStaticMarkup(React.createElement(OfficialUpdates));
+  assert.equal(OFFICIAL_UPDATES.length, 2);
+  assert.ok(officialUpdates.includes('publisher-fda-heading'));
+  assert.ok(officialUpdates.includes('publisher-vsd-heading'));
+  assert.ok(!officialUpdates.includes('<img'));
+  assert.ok(!officialUpdates.includes('<iframe'));
+  for (const update of OFFICIAL_UPDATES) {
+    const url = new URL(update.url);
+    assert.equal(url.protocol, 'https:');
+    assert.ok(['fdaghana.gov.gh', 'vsd.gov.gh'].includes(url.hostname));
+    assert.ok(officialUpdates.includes(`href="${update.url}" target="_blank" rel="noopener noreferrer"`));
+    assert.ok(officialUpdates.includes(update.source));
+    assert.ok(officialUpdates.includes(`dateTime="${update.date}"`));
+  }
+  const { MediaView } = await server.ssrLoadModule('/src/views/MediaView.tsx');
+  const mediaWithUpdates = renderToStaticMarkup(React.createElement(MediaView, { onNavigate: noop }));
+  assert.ok(mediaWithUpdates.includes('publisher-fda-heading'));
+  assert.ok(mediaWithUpdates.includes('publisher-vsd-heading'));
+  assert.ok(!mediaWithUpdates.includes('Latest from KACL'));
+  assert.ok(!mediaWithUpdates.includes('media-filters'));
+  const { INITIAL_MEDIA_ITEMS } = await server.ssrLoadModule('/src/data/initialData.ts');
+  assert.equal(INITIAL_MEDIA_ITEMS.length, 0);
+  for (const title of ['Veterinary Certification Protocol on Food Animals', 'Expansion of Branded Cold Van', 'Clean LPG Singeing System Sets Benchmark']) {
+    assert.ok(!mediaWithUpdates.includes(title));
+  }
+
   const documentHead = readFileSync('index.html', 'utf8');
   assert.ok(documentHead.includes('rel="icon" type="image/jpeg" href="/images/brand/cow-tab-icon.jpg"'));
   assert.ok(!readFileSync('src/index.css', 'utf8').includes('nav-brand-monogram'));

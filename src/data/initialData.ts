@@ -755,56 +755,8 @@ export const INITIAL_NOTICES: PublicNotice[] = [
   }
 ];
 
-export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
-  {
-    id: 'med-01',
-    type: 'notice',
-    title: 'Veterinary Certification Protocol on Food Animals',
-    date: '2026-10-15',
-    summary: 'Rigorous ante-mortem and post-mortem inspection standards across cattle, sheep, goats, and pigs.',
-    content: 'Full report on the mandatory veterinary condemnation and disposal guidelines enforced at Kumasi Abattoir.'
-  },
-  {
-    id: 'med-02',
-    type: 'press_release',
-    title: 'Expansion of Branded Cold Van Door-to-Door Delivery Routes',
-    date: '2026-09-20',
-    summary: 'Increasing refrigerated delivery frequency to KNUST, KATH, and regional educational institutions in Kumasi.',
-    content: 'KACL has deployed additional insulated temperature-controlled cold vans to meet rising demand from culinary and health institutions.'
-  },
-  {
-    id: 'med-03',
-    type: 'news',
-    title: 'Clean LPG Singeing System Sets Benchmark for Meat Wholesomeness',
-    date: '2026-08-10',
-    summary: 'Modern LPG-fueled singeing replaces unhygienic traditional methods, safeguarding public health in Ashanti Region.',
-    content: 'An overview of KACL environmentally compliant singeing technology that eliminates noxious smoke and residues from carcass skins.'
-  },
-  {
-    id: 'med-04',
-    type: 'gallery',
-    title: 'KACL Modern Processing Complex in Kaase',
-    date: '2026-08-01',
-    summary: 'Facility exterior, cold dispatch loading docks, and livestock holding kraals.',
-    imageUrl: '/src/assets/images/hero_facility_exterior_1793281354921.jpg'
-  },
-  {
-    id: 'med-05',
-    type: 'gallery',
-    title: 'Veterinary Inspection and Cold Chain Hall',
-    date: '2026-08-01',
-    summary: 'Stainless steel dressing line and post-mortem certification station.',
-    imageUrl: '/src/assets/images/processing_inspection_1793281367767.jpg'
-  },
-  {
-    id: 'med-06',
-    type: 'gallery',
-    title: 'Branded Refrigerated Cold Van Delivery Fleet',
-    date: '2026-08-01',
-    summary: 'Temperature-controlled logistics for bulk and door-to-door supply across Kumasi.',
-    imageUrl: '/src/assets/images/refrigerated_logistics_1793281380810.jpg'
-  }
-];
+// No company-authored media has been supplied for publication.
+export const INITIAL_MEDIA_ITEMS: MediaItem[] = [];
 
 export const INITIAL_INQUIRIES: CustomerInquiry[] = [
   {
