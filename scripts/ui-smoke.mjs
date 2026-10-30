@@ -178,6 +178,15 @@ try {
     onNavigate: noop,
   }));
   assert.ok(footer.includes('/images/brand/kacl-logo.png'));
+  const footerHours = footer.match(/<section aria-labelledby="footer-opening-hours"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(footerHours);
+  for (const label of ['Opening hours', 'Monday to Friday', 'Saturday', 'Sunday', '8am - 5pm', '8am - 4pm', '8am - 2pm']) {
+    assert.ok(footerHours.includes(label));
+  }
+  assert.ok(!footerHours.includes('<details'));
+  assert.ok(services.includes('id="services-opening-hours">Opening hours</h2>'));
+  assert.ok(!services.includes('View opening hours'));
+  assert.ok(contact.includes('<h2>Opening hours</h2>'));
   assert.ok(!/Staff portal|Protected Staff Administration/.test(header + footer));
   assert.ok(!readFileSync('src/App.tsx', 'utf8').includes('StaffCmsView'));
 
@@ -185,6 +194,12 @@ try {
   assert.ok(documentHead.includes('rel="icon" type="image/jpeg" href="/images/brand/cow-tab-icon.jpg"'));
   assert.ok(!readFileSync('src/index.css', 'utf8').includes('nav-brand-monogram'));
   assert.match(header, /aria-current="page"[^>]*>Our Services/);
+  const headerHours = header.slice(header.indexOf('class="nav-utility-hours"'), header.indexOf('<a href="tel:'));
+  assert.ok(headerHours.includes('aria-label="Opening hours"'));
+  for (const hours of ['Mon-Fri: 8am - 5pm', 'Sat: 8am - 4pm', 'Sun: 8am - 2pm']) {
+    assert.ok(headerHours.includes(hours));
+  }
+  assert.ok(!/\.nav-utility-hours\s*\{[^}]*display:\s*none/.test(readFileSync('src/index.css', 'utf8')));
   assert.ok(
     !readFileSync(
       "src/components/AbattoirProcessAnimation.tsx",

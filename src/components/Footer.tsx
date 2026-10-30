@@ -134,12 +134,26 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   {KACL_COMPANY_INFO.email}
                 </a>
               </div>
-              <div className="flex items-start gap-2 pt-1">
-                <Clock className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-                <span className="text-[11px] leading-tight text-slate-400 font-mono">
-                  {KACL_COMPANY_INFO.workingHoursText.monFri} · {KACL_COMPANY_INFO.workingHoursText.sat} · {KACL_COMPANY_INFO.workingHoursText.sun}
-                </span>
-              </div>
+              <section aria-labelledby="footer-opening-hours" className="pt-4 text-sm text-slate-200">
+                <h4 id="footer-opening-hours" className="flex items-center gap-2 font-semibold text-white mb-3">
+                  <Clock className="w-4 h-4 text-sky-400 shrink-0" />
+                  Opening hours
+                </h4>
+                <dl className="space-y-2">
+                  <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
+                    <dt>Monday to Friday</dt>
+                    <dd className="font-medium text-white">8am - 5pm</dd>
+                  </div>
+                  <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
+                    <dt>Saturday</dt>
+                    <dd className="font-medium text-white">8am - 4pm</dd>
+                  </div>
+                  <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
+                    <dt>Sunday</dt>
+                    <dd className="font-medium text-white">8am - 2pm</dd>
+                  </div>
+                </dl>
+              </section>
             </div>
           </div>
 

@@ -206,14 +206,14 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
             </button>
           </div>
         </section>
-        <details open className="services-hours">
-          <summary>View opening hours</summary>
+        <section className="services-hours" aria-labelledby="services-opening-hours">
+          <h2 id="services-opening-hours">Opening hours</h2>
           <div>
             <p>{KACL_COMPANY_INFO.workingHoursText.monFri}</p>
             <p>{KACL_COMPANY_INFO.workingHoursText.sat}</p>
             <p>{KACL_COMPANY_INFO.workingHoursText.sun}</p>
           </div>
-        </details>
+        </section>
       </div>
     </div>
   );

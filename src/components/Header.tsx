@@ -133,9 +133,13 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
           <div className="nav-utility-actions">
-            <span className="nav-utility-hours">
+            <span className="nav-utility-hours" aria-label="Opening hours">
               <Clock className="w-3 h-3" aria-hidden="true" />
-              Mon to Fri, 8am to 5pm
+              <span>Mon-Fri: 8am - 5pm</span>
+              <span aria-hidden="true">·</span>
+              <span>Sat: 8am - 4pm</span>
+              <span aria-hidden="true">·</span>
+              <span>Sun: 8am - 2pm</span>
             </span>
             <a
               href={`tel:${KACL_COMPANY_INFO.primaryPhone.replace(/\s/g, "")}`}

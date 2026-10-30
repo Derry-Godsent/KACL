@@ -1534,11 +1534,10 @@
   color: #4c5c6d;
   font-size: 14px;
 }
-.services-hours summary {
-  display: list-item;
-  cursor: pointer;
-  min-height: 44px;
-  padding-block: 12px;
+.services-hours h2 {
+  color: #102a43;
+  font-size: 18px;
+  font-weight: 600;
 }
 .services-hours > div {
   padding-block: 8px;
@@ -3280,7 +3279,15 @@
   text-underline-offset: 3px;
 }
 .nav-utility-hours {
-  color: #c3ccd5;
+  color: #fff;
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+.nav-utility-hours > span {
+  white-space: nowrap;
+}
+.nav-utility-hours > svg {
+  flex-shrink: 0;
 }
 .nav-main {
   display: flex;
@@ -3433,8 +3440,18 @@
   .nav-menu-toggle {
     display: flex;
   }
+  .nav-utility-inner {
+    flex-wrap: wrap;
+    gap: 0 12px;
+  }
+  .nav-utility-actions {
+    display: contents;
+  }
   .nav-utility-hours {
-    display: none;
+    order: 1;
+    width: 100%;
+    padding: 2px 0 8px;
+    font-size: 11px;
   }
   .nav-mobile {
     display: block;
