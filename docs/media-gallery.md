@@ -36,6 +36,8 @@ The grid initially renders 12 lazy-loaded thumbnails. “Show more photographs�
 
 The viewer uses a native modal dialog. It traps focus, makes the background inert, locks background scrolling and restores focus to the opening button on close. Left/Right browse the current filter selection, Home/End jump to its first/last photograph, and Escape closes it. Previous/Next and Close are also available as touch-friendly buttons. Images use `object-fit: contain`, so portraits and group photographs are not cropped in the viewer.
 
+On desktop (768px and wider), the viewer is a centered window capped at 960 × 740px so photographs do not fill the whole monitor. On mobile it remains full-screen with the original spacing and controls.
+
 ## Adding another photograph
 
 1. Add the supplied original to the album's `originals` directory.
