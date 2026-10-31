@@ -24,7 +24,7 @@ import { ContactView } from './views/ContactView';
 import { PoliciesView } from './views/PoliciesView';
 import { INITIAL_OUTLETS } from './data/initialData';
 import { ReportsView } from './views/ReportsView';
-import { MediaView } from './views/MediaView';
+import { MediaView, type MediaSection } from './views/MediaView';
 
 // Data & Storage
 import {
@@ -44,6 +44,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState<string>('home');
   useSiteMotion(currentView);
   const [productCategory, setProductCategory] = useState('all');
+  const [mediaSection, setMediaSection] = useState<MediaSection>('gallery');
   const [navigationRequest, setNavigationRequest] = useState<{ targetId: string | null } | null>(null);
   const [products] = useState<Product[]>(getStoredProducts());
   const [inquiries, setInquiries] = useState<CustomerInquiry[]>(getStoredInquiries());
@@ -79,6 +80,7 @@ export default function App() {
   const handleNavigate = (destination: string) => {
     const route = resolveNavigation(destination);
     if (route.category !== null) setProductCategory(route.category);
+    if (route.view === 'media' && 'section' in route) setMediaSection(route.section ?? 'gallery');
     setCurrentView(route.view);
     setNavigationRequest({ targetId: route.targetId });
   };
@@ -192,7 +194,11 @@ export default function App() {
         {currentView === 'food-safety' && <FoodSafetyView onNavigate={handleNavigate} />}
 
         {currentView === 'media' && (
-          <MediaView onNavigate={handleNavigate} />
+          <MediaView
+            onNavigate={handleNavigate}
+            activeSection={mediaSection}
+            onSectionChange={setMediaSection}
+          />
         )}
 
         {currentView === 'contact' && (

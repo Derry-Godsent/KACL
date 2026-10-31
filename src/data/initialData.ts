@@ -755,7 +755,8 @@ export const INITIAL_NOTICES: PublicNotice[] = [
   }
 ];
 
-// No company-authored media has been supplied for publication.
+// News comes from OfficialUpdates. The supplied photo archive is kept separate
+// in mediaGallery.ts; no company-authored news articles are inferred from it.
 export const INITIAL_MEDIA_ITEMS: MediaItem[] = [];
 
 export const INITIAL_INQUIRIES: CustomerInquiry[] = [

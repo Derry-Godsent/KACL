@@ -12,7 +12,7 @@ const revealTargets = [
   '.counter-product', '.about-milestones > li', '.about-values-list > li',
   '.about-purpose > *', '.management-profile',
   '.contact-quick-links > a', '.contact-form-panel', '.contact-visit',
-  '.media-empty', '.products-empty', 'footer > div',
+  '.products-empty', 'footer > div',
 ].join(',');
 
 // Use transform keyframes for broad mobile Safari support. Patterns are
@@ -115,7 +115,7 @@ export function useSiteMotion(page: string) {
                 record.target.matches('[aria-pressed="true"], [aria-selected="true"]')) {
               // Re-introduce results on selection, including reused React nodes.
               const scope = record.target.closest('main');
-              scope?.querySelectorAll('.counter-product, .services-card, .media-story, .media-featured').forEach(element => {
+              scope?.querySelectorAll('.counter-product, .services-card').forEach(element => {
                 const bounds = element.getBoundingClientRect();
                 if (bounds.bottom > 0 && bounds.top < window.innerHeight) {
                   seen.add(element);

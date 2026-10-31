@@ -271,15 +271,60 @@ try {
     assert.ok(officialUpdates.includes(`dateTime="${update.date}"`));
   }
   const { MediaView } = await server.ssrLoadModule('/src/views/MediaView.tsx');
-  const mediaWithUpdates = renderToStaticMarkup(React.createElement(MediaView, { onNavigate: noop }));
+  const { AGM_PHOTOS, MEDIA_ALBUM } = await server.ssrLoadModule('/src/data/mediaGallery.ts');
+  const mediaGallery = renderToStaticMarkup(React.createElement(MediaView, {
+    onNavigate: noop, activeSection: 'gallery', onSectionChange: noop,
+  }));
+  const mediaWithUpdates = renderToStaticMarkup(React.createElement(MediaView, {
+    onNavigate: noop, activeSection: 'news', onSectionChange: noop,
+  }));
+  assert.equal(AGM_PHOTOS.length, 32);
+  assert.equal(new Set(AGM_PHOTOS.map(photo => photo.id)).size, 32);
+  assert.equal(AGM_PHOTOS.filter(photo => photo.category === 'discussion').length, 14);
+  assert.equal(AGM_PHOTOS.filter(photo => photo.category === 'participants').length, 12);
+  assert.equal(AGM_PHOTOS.filter(photo => photo.category === 'groups').length, 6);
+  assert.ok(AGM_PHOTOS.includes(MEDIA_ALBUM.cover));
+  for (const photo of AGM_PHOTOS) {
+    for (const url of [photo.originalUrl, photo.imageUrl, photo.thumbnailUrl]) {
+      assert.ok(readFileSync(`public${url}`).length > 0, `Missing asset: ${url}`);
+    }
+    assert.ok(photo.alt.length > 30);
+    assert.ok(photo.width > 0 && photo.height > 0);
+  }
+  assert.ok(mediaGallery.includes('5th Annual General Meeting'));
+  assert.ok(mediaGallery.includes('id="media-panel-gallery"'));
+  assert.equal((mediaGallery.match(/class="media-photo-card"/g) || []).length, 12);
+  assert.equal((mediaGallery.match(/loading="lazy"/g) || []).length, 12);
+  assert.ok(mediaGallery.includes('Show more photographs'));
+  assert.ok(mediaGallery.includes('aria-pressed="true"'));
+  assert.ok(mediaGallery.includes('fetchPriority="high"'));
+  assert.ok(!mediaGallery.includes('/originals/'), 'The grid must not load full-size originals');
+  assert.ok(!mediaGallery.includes('publisher-fda-heading'));
+  assert.ok(!mediaGallery.includes('publisher-vsd-heading'));
+  assert.ok(mediaWithUpdates.includes('id="media-panel-news"'));
   assert.ok(mediaWithUpdates.includes('publisher-fda-heading'));
   assert.ok(mediaWithUpdates.includes('publisher-vsd-heading'));
+  assert.ok(!mediaWithUpdates.includes('<img'));
+  assert.ok(!mediaWithUpdates.includes('media-photo-grid'));
   assert.ok(!mediaWithUpdates.includes('Latest from KACL'));
-  assert.ok(!mediaWithUpdates.includes('media-filters'));
+  assert.deepEqual(resolveNavigation('media'), { view: 'media', category: null, targetId: null, section: 'gallery' });
+  assert.deepEqual(resolveNavigation('media:news'), { view: 'media', category: null, targetId: null, section: 'news' });
+  assert.deepEqual(resolveNavigation('notices'), { view: 'media', category: null, targetId: null, section: 'news' });
+  const { MediaLightbox } = await server.ssrLoadModule('/src/components/MediaLightbox.tsx');
+  const lightbox = renderToStaticMarkup(React.createElement(MediaLightbox, {
+    photos: AGM_PHOTOS, initialIndex: 0, onClose: noop,
+  }));
+  assert.ok(lightbox.includes('<dialog'));
+  assert.ok(lightbox.includes('aria-labelledby="media-lightbox-title"'));
+  assert.ok(lightbox.includes(AGM_PHOTOS[0].imageUrl));
+  assert.ok(lightbox.includes(`href="${AGM_PHOTOS[0].originalUrl}" download=`));
+  assert.ok(lightbox.includes('Previous photograph'));
+  assert.ok(lightbox.includes('Next photograph'));
   const { INITIAL_MEDIA_ITEMS } = await server.ssrLoadModule('/src/data/initialData.ts');
   assert.equal(INITIAL_MEDIA_ITEMS.length, 0);
   for (const title of ['Veterinary Certification Protocol on Food Animals', 'Expansion of Branded Cold Van', 'Clean LPG Singeing System Sets Benchmark']) {
     assert.ok(!mediaWithUpdates.includes(title));
+    assert.ok(!mediaGallery.includes(title));
   }
 
   const documentHead = readFileSync('index.html', 'utf8');
@@ -299,7 +344,7 @@ try {
     ).includes("gradient"),
   );
   console.log(
-    "UI smoke checks passed: 39-product count, licensed photo attribution, category filtering, marketing selection, navigation state, no generated product photos, no gradients.",
+    "UI smoke checks passed: 39 products, licensed photo attribution, 32 AGM photographs with optimized assets, separate gallery/news tabs, navigation, category filtering, no generated product photos, no gradients.",
   );
 } finally {
   await server.close();

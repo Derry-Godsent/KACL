@@ -14,8 +14,16 @@ export function resolveNavigation(destination: string) {
   if (view === 'services' && serviceIds.has(detail)) {
     return { view: 'services', category: null, targetId: detail };
   }
+  if (view === 'media' || view === 'notices') {
+    return {
+      view: 'media',
+      category: null,
+      targetId: null,
+      section: view === 'notices' || detail === 'news' ? 'news' as const : 'gallery' as const,
+    };
+  }
   return {
-    view: view === 'notices' ? 'media' : view,
+    view,
     category: null,
     targetId: null,
   };
