@@ -2,7 +2,7 @@ name: Security and build checks
 
 on:
   push:
-    branches: [main]
+    branches: [main, "arena/**"]
   pull_request:
 
 permissions:

@@ -13,11 +13,11 @@ No website can be guaranteed impenetrable. The goal is to remove known weaknesse
 
 ### Critical: live domain exposed WordPress installer
 
-**Observation:** `https://kumasiabattoir.com` redirected to `/wp-admin/install.php` and displayed the WordPress installation language picker. The domain was not attached to the Vercel project.
+**Observation:** During the audit, `https://kumasiabattoir.com` redirected to `/wp-admin/install.php` and displayed the WordPress installation language picker. A later check returned `Forbidden: PHP engine is disable.` on both the apex and `www` hostnames. The domain was not attached to the Vercel project.
 
 **Risk:** If reachable by the public, an unclaimed installer can allow an attacker to create the administrator account and take over the site. The reported `ERR_CERT_AUTHORITY_INVALID` also indicates a TLS/certificate-chain problem, though a certificate error alone is not proof of a hack.
 
-**Required action:** Take the old WordPress host offline or restrict access immediately; remove the installer if the site is being retired; attach `kumasiabattoir.com` to the hardened Vercel deployment; update DNS; verify Vercel issues a valid certificate; enable HTTPS-only access. Do not complete the WordPress installer as a "fix".
+**Required action:** Keep the old WordPress host offline or restricted; remove the installer and any unneeded WordPress files if the site is being retired; attach `kumasiabattoir.com` to the hardened Vercel deployment; update DNS; verify Vercel issues a valid certificate; enable HTTPS-only access. Do not complete the WordPress installer as a "fix".
 
 ### High: customer data and fake admin artefacts in browser storage
 
@@ -87,6 +87,7 @@ Results on this branch:
 - `npm run build`: passed.
 - Secure static preview browser check: security headers present, legacy private storage purged, malformed cart entries rejected, contact hand-off does not persist PII, gallery/lightbox still works, `security.txt` served, and no CSP violations.
 - Vercel project install command updated to `npm ci`.
+- Hardened preview deployment: `dpl_C3Lu9x4jsuqNJJfkBdXM4XDZoGXf` (READY), `https://kacl-p5t1ck4cg-derry-design-projects.vercel.app`, branch alias `https://kacl-git-arena-120864be-kacl-derry-design-projects.vercel.app`.
 
 GitHub secret scanning, push protection, Dependabot alerts and private vulnerability reporting could not be enabled from this session because the GitHub integration lacks repository-administration permission. A repository owner should enable them in GitHub Settings > Advanced Security.
 
