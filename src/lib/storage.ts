@@ -3,137 +3,91 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Product, ServiceItem, RetailOutlet, PublicNotice, CustomerInquiry, AuditLog, StaffUser } from '../types';
-import { INITIAL_PRODUCTS, INITIAL_SERVICES, INITIAL_OUTLETS, INITIAL_NOTICES, INITIAL_INQUIRIES } from '../data/initialData';
+import type { Product } from '../types';
+import { INITIAL_PRODUCTS } from '../data/initialData';
 
 const STORAGE_KEYS = {
-  PRODUCTS: 'kacl_cms_products',
-  SERVICES: 'kacl_cms_services',
-  OUTLETS: 'kacl_cms_outlets',
-  NOTICES: 'kacl_cms_notices',
-  INQUIRIES: 'kacl_cms_inquiries',
-  AUDIT_LOGS: 'kacl_cms_audit_logs',
-  STAFF_SESSION: 'kacl_staff_session',
-  QUOTATION_CART: 'kacl_quotation_cart'
-};
+  QUOTATION_CART: 'kacl_quotation_cart',
+} as const;
+
+/**
+ * Older builds stored enquiries, audit entries and a fake staff session in the
+ * browser. Remove those keys so contact details do not remain on shared devices.
+ * The quotation cart is intentionally kept: it contains catalogue items only.
+ */
+const LEGACY_PRIVATE_KEYS = [
+  'kacl_cms_inquiries',
+  'kacl_cms_audit_logs',
+  'kacl_staff_session',
+  'kacl_submission_log',
+  'kacl_cms_products',
+  'kacl_cms_services',
+  'kacl_cms_outlets',
+  'kacl_cms_notices',
+] as const;
 
 export interface QuotationItem {
   productId: string;
   productName: string;
   categoryLabel: string;
   code: string;
-  estimatedKg: number;
-  packagingPreference?: string;
+  estimatedKg?: number;
 }
 
-export function loadStoredData<T>(key: string, fallback: T): T {
+const MAX_CART_ITEMS = 100;
+
+export function purgeLegacyPrivateStorage(): void {
+  if (typeof window === 'undefined') return;
   try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    return JSON.parse(raw);
+    for (const key of LEGACY_PRIVATE_KEYS) window.localStorage.removeItem(key);
   } catch {
-    return fallback;
+    // Storage can be unavailable in private or restricted browser contexts.
   }
 }
 
-export function saveStoredData<T>(key: string, value: T): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (err) {
-    console.warn('Storage save failed:', err);
-  }
+function isQuotationItem(value: unknown): value is QuotationItem {
+  if (!value || typeof value !== 'object') return false;
+  const item = value as Record<string, unknown>;
+  return (
+    typeof item.productId === 'string' && item.productId.length > 0 && item.productId.length <= 100 &&
+    typeof item.productName === 'string' && item.productName.length > 0 && item.productName.length <= 200 &&
+    typeof item.categoryLabel === 'string' && item.categoryLabel.length <= 100 &&
+    typeof item.code === 'string' && item.code.length > 0 && item.code.length <= 50 &&
+    (item.estimatedKg === undefined ||
+      (typeof item.estimatedKg === 'number' && Number.isFinite(item.estimatedKg) && item.estimatedKg > 0 && item.estimatedKg <= 100000))
+  );
 }
 
-// Initial audit logs
-const INITIAL_AUDIT_LOGS: AuditLog[] = [
-  {
-    id: 'log-001',
-    timestamp: '2026-10-28T09:15:20Z',
-    user: 'System Inbound',
-    action: 'INQUIRY_RECEIVED',
-    targetCollection: 'inquiries',
-    details: 'New bulk institutional enquiry received from Golden Stool Grand Hotel (Ref: KACL-RFQ-2026-0041)'
-  },
-  {
-    id: 'log-002',
-    timestamp: '2026-10-28T10:30:00Z',
-    user: 'kofi.owusu',
-    action: 'STATUS_UPDATE',
-    targetCollection: 'inquiries',
-    details: 'Updated status of KACL-RFQ-2026-0041 to REVIEWED. Added internal follow-up note.'
-  },
-  {
-    id: 'log-003',
-    timestamp: '2026-10-25T14:00:00Z',
-    user: 'admin.director',
-    action: 'POLICY_UPDATE',
-    targetCollection: 'notices',
-    details: 'Published advisory on cold-chain transport for commercial butchers.'
-  }
-];
-
-export function getStoredProducts(): Product[] {
-  return loadStoredData<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
-}
-
-export function saveStoredProducts(products: Product[]): void {
-  saveStoredData(STORAGE_KEYS.PRODUCTS, products);
-}
-
-export function getStoredServices(): ServiceItem[] {
-  return loadStoredData<ServiceItem[]>(STORAGE_KEYS.SERVICES, INITIAL_SERVICES);
-}
-
-export function getStoredOutlets(): RetailOutlet[] {
-  return loadStoredData<RetailOutlet[]>(STORAGE_KEYS.OUTLETS, INITIAL_OUTLETS);
-}
-
-export function getStoredNotices(): PublicNotice[] {
-  return loadStoredData<PublicNotice[]>(STORAGE_KEYS.NOTICES, INITIAL_NOTICES);
-}
-
-export function saveStoredNotices(notices: PublicNotice[]): void {
-  saveStoredData(STORAGE_KEYS.NOTICES, notices);
-}
-
-export function getStoredInquiries(): CustomerInquiry[] {
-  return loadStoredData<CustomerInquiry[]>(STORAGE_KEYS.INQUIRIES, INITIAL_INQUIRIES);
-}
-
-export function saveStoredInquiries(inquiries: CustomerInquiry[]): void {
-  saveStoredData(STORAGE_KEYS.INQUIRIES, inquiries);
-}
-
-export function getStoredAuditLogs(): AuditLog[] {
-  return loadStoredData<AuditLog[]>(STORAGE_KEYS.AUDIT_LOGS, INITIAL_AUDIT_LOGS);
-}
-
-export function addAuditLog(action: string, targetCollection: string, details: string, user = 'staff_operator'): void {
-  const current = getStoredAuditLogs();
-  const newLog: AuditLog = {
-    id: `log-${Date.now()}`,
-    timestamp: new Date().toISOString(),
-    user,
-    action,
-    targetCollection,
-    details
-  };
-  saveStoredData(STORAGE_KEYS.AUDIT_LOGS, [newLog, ...current]);
-}
-
-// Quotation builder items in customer session
 export function getQuotationCart(): QuotationItem[] {
-  return loadStoredData<QuotationItem[]>(STORAGE_KEYS.QUOTATION_CART, []);
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEYS.QUOTATION_CART);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.slice(0, MAX_CART_ITEMS).filter(isQuotationItem).map(item => ({
+      productId: item.productId,
+      productName: item.productName,
+      categoryLabel: item.categoryLabel,
+      code: item.code,
+      ...(item.estimatedKg === undefined ? {} : { estimatedKg: item.estimatedKg }),
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export function saveQuotationCart(items: QuotationItem[]): void {
-  saveStoredData(STORAGE_KEYS.QUOTATION_CART, items);
+  if (typeof window === 'undefined') return;
+  try {
+    const safeItems = items.slice(0, MAX_CART_ITEMS).filter(isQuotationItem);
+    window.localStorage.setItem(STORAGE_KEYS.QUOTATION_CART, JSON.stringify(safeItems));
+  } catch {
+    // The cart still works in memory when storage is unavailable or full.
+  }
 }
 
-export function getStaffSession(): StaffUser | null {
-  return loadStoredData<StaffUser | null>(STORAGE_KEYS.STAFF_SESSION, null);
-}
-
-export function setStaffSession(user: StaffUser | null): void {
-  saveStoredData(STORAGE_KEYS.STAFF_SESSION, user);
+/** Catalogue data is shipped with the build; it is not editable in the browser. */
+export function getStoredProducts(): Product[] {
+  return INITIAL_PRODUCTS;
 }

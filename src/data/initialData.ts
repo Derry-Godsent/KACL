@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Product, ServiceItem, RetailOutlet, PublicNotice, CustomerInquiry, BoardMember, ManagementMember, MediaItem } from '../types';
+import { Product, ServiceItem, RetailOutlet, PublicNotice, BoardMember, ManagementMember, MediaItem } from '../types';
 
 export const KACL_COMPANY_INFO = {
   legalName: 'Kumasi Abattoir Company Limited',
@@ -758,26 +758,3 @@ export const INITIAL_NOTICES: PublicNotice[] = [
 // News comes from OfficialUpdates. The supplied photo archive is kept separate
 // in mediaGallery.ts; no company-authored news articles are inferred from it.
 export const INITIAL_MEDIA_ITEMS: MediaItem[] = [];
-
-export const INITIAL_INQUIRIES: CustomerInquiry[] = [
-  {
-    id: 'inq-101',
-    referenceNumber: 'KACL-RFQ-2026-0041',
-    createdAt: '2026-10-28T09:15:00Z',
-    inquiryType: 'bulk_institutional',
-    fullName: 'Kwame Mensah',
-    organizationName: 'Golden Stool Grand Hotel & Banqueting',
-    email: 'k.mensah@goldenstoolhotel.com',
-    phoneNumber: '0244 112 233',
-    preferredContact: 'phone',
-    deliveryLocation: 'Nhyiaeso, Kumasi',
-    requestedProducts: [
-      { productId: 'beef-08', productName: 'BEEF SIRLOIN', estimatedKg: 80 },
-      { productId: 'proc-05', productName: 'MINCED MEAT (BEEF)', estimatedKg: 50 }
-    ],
-    notes: 'Require scheduled bi-weekly deliveries on Tuesdays and Fridays before 08:00 GMT in refrigerated van. Please provide quotation per kilogram with cold delivery terms included.',
-    status: 'reviewed',
-    internalNotes: 'Sales team spoke with Mr. Mensah. Proforma invoice being prepared.',
-    assignedStaff: 'Samuel Boison (Marketing Head)'
-  }
-];

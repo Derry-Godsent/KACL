@@ -1,0 +1,4 @@
+Contact: mailto:kumasiabatoir@gmail.com
+Expires: 2027-10-31T00:00:00Z
+Preferred-Languages: en
+Canonical: https://kumasiabattoir.com/.well-known/security.txt

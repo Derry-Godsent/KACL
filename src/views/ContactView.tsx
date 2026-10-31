@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Phone,
   Mail,
@@ -11,30 +11,22 @@ import {
   Clock,
   MessageSquare,
   CheckCircle2,
-  AlertCircle,
 } from "lucide-react";
-import {
-  inquiryFormSchema,
-  checkSubmissionRateLimit,
-  recordSubmission,
-} from "../lib/validation";
-import { CustomerInquiry, InquiryType } from "../types";
+import { inquiryFormSchema, type InquiryFormData } from "../lib/validation";
+import { InquiryType } from "../types";
 import { QuotationItem } from "../lib/storage";
 import { KACL_COMPANY_INFO } from "../data/initialData";
 
 interface ContactViewProps {
   quotationItems: QuotationItem[];
-  onSubmitInquiry: (inquiry: CustomerInquiry) => void;
   onClearQuotationItems: () => void;
 }
 
 export const ContactView: React.FC<ContactViewProps> = ({
   quotationItems,
-  onSubmitInquiry,
   onClearQuotationItems,
 }) => {
-  const [formRenderedAt, setFormRenderedAt] = useState<number>(Date.now());
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<InquiryFormData>({
     fullName: "",
     organizationName: "",
     email: "",
@@ -42,28 +34,20 @@ export const ContactView: React.FC<ContactViewProps> = ({
     inquiryType: (quotationItems.length > 0
       ? "quotation"
       : "general") as InquiryType,
-    preferredContact: "phone" as "phone" | "whatsapp" | "email",
+    preferredContact: "phone",
     deliveryLocation: "",
     notes:
       quotationItems.length > 0
         ? `Requested items from catalogue:\n${quotationItems
-            .map((i) => `- ${i.productName} (${i.code}): ${i.estimatedKg} kg`)
+            .map((i) => `- ${i.productName} (${i.code}): ${i.estimatedKg ?? 0} kg`)
             .join(
               "\n",
             )}\n\nPlease advise on pricing and cold van delivery availability.`
         : "",
-    honeypot: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittedInquiry, setSubmittedInquiry] =
-    useState<CustomerInquiry | null>(null);
-  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setFormRenderedAt(Date.now());
-  }, []);
+  const [prepared, setPrepared] = useState<InquiryFormData | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -83,21 +67,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
-    setRateLimitError(null);
-
-    const rateCheck = checkSubmissionRateLimit();
-    if (!rateCheck.allowed) {
-      setRateLimitError(
-        `Submission rate limit reached. Please wait ${rateCheck.waitSeconds} seconds before submitting another request.`,
-      );
-      return;
-    }
-
-    const result = inquiryFormSchema.safeParse({
-      ...formData,
-      formRenderedAt,
-    });
+    const result = inquiryFormSchema.safeParse(formData);
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -114,36 +84,11 @@ export const ContactView: React.FC<ContactViewProps> = ({
       return;
     }
 
-    setIsSubmitting(true);
-
-    const refNum = `KACL-RFQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newInquiry: CustomerInquiry = {
-      id: `inq-${Date.now()}`,
-      referenceNumber: refNum,
-      createdAt: new Date().toISOString(),
-      inquiryType: formData.inquiryType,
-      fullName: formData.fullName.trim(),
-      organizationName: formData.organizationName.trim() || undefined,
-      email: formData.email.trim(),
-      phoneNumber: formData.phoneNumber.trim(),
-      preferredContact: formData.preferredContact,
-      deliveryLocation: formData.deliveryLocation.trim(),
-      requestedProducts: quotationItems.map((item) => ({
-        productId: item.productId,
-        productName: item.productName,
-        estimatedKg: item.estimatedKg,
-      })),
-      notes: formData.notes.trim(),
-      status: "new",
-    };
-
-    setTimeout(() => {
-      recordSubmission();
-      onSubmitInquiry(newInquiry);
-      setSubmittedInquiry(newInquiry);
-      setIsSubmitting(false);
-      onClearQuotationItems();
-    }, 500);
+    // This is a local hand-off to WhatsApp/email, not a server submission.
+    // Do not persist names, phone numbers, email addresses or messages.
+    setPrepared(result.data);
+    setErrors({});
+    onClearQuotationItems();
   };
 
   const whatsappDirectUrl = `https://wa.me/${KACL_COMPANY_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=Hello%20Kumasi%20Abattoir%20Sales,%20I%20am%20contacting%20you%20regarding%20meat%20supply.`;
@@ -182,11 +127,11 @@ export const ContactView: React.FC<ContactViewProps> = ({
       placeholder: "e.g. 0202 015 746",
     },
   ] as const;
-  const preparedMessage = submittedInquiry
-    ? `Hello KACL, I would like to send this enquiry.\nReference: ${submittedInquiry.referenceNumber}\nName: ${submittedInquiry.fullName}\nOrganisation: ${submittedInquiry.organizationName || "Not specified"}\nPhone: ${submittedInquiry.phoneNumber}\nEmail: ${submittedInquiry.email}\nPreferred contact: ${submittedInquiry.preferredContact}\nLocation: ${submittedInquiry.deliveryLocation}\n\n${submittedInquiry.notes}`
+  const preparedMessage = prepared
+    ? `Hello KACL, I would like to send this enquiry.\nName: ${prepared.fullName}\nOrganisation: ${prepared.organizationName || "Not specified"}\nPhone: ${prepared.phoneNumber}\nEmail: ${prepared.email}\nPreferred contact: ${prepared.preferredContact}\nLocation: ${prepared.deliveryLocation}\n\n${prepared.notes}`
     : "";
   const sendWhatsApp = `https://wa.me/${KACL_COMPANY_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(preparedMessage)}`;
-  const sendEmail = `mailto:${KACL_COMPANY_INFO.email}?subject=${encodeURIComponent("KACL enquiry " + (submittedInquiry?.referenceNumber || ""))}&body=${encodeURIComponent(preparedMessage)}`;
+  const sendEmail = `mailto:${KACL_COMPANY_INFO.email}?subject=${encodeURIComponent("KACL website enquiry")}&body=${encodeURIComponent(preparedMessage)}`;
 
   const mapQuery = encodeURIComponent('Kumasi Abattoir Company Limited, Kaase, Kumasi, Ghana');
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
@@ -198,8 +143,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
           title="Google Map showing Kumasi Abattoir Company Limited in Kaase, Kumasi"
           src={`https://maps.google.com/maps?q=${mapQuery}&z=15&output=embed`}
           loading="eager"
-          referrerPolicy="no-referrer-when-downgrade"
-          allowFullScreen
+          referrerPolicy="no-referrer"
         />
         <div className="contact-map-card">
           <span className="contact-map-icon"><MapPin className="w-6 h-6" aria-hidden="true" /></span>
@@ -207,7 +151,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
             <span className="contact-map-label">Find us in Kumasi</span>
             <h2>Kumasi Abattoir Company Limited</h2>
             <p>Kaase Industrial Area · {KACL_COMPANY_INFO.ghanaPostAddress}</p>
-            <a href={mapUrl} target="_blank" rel="noreferrer">Open in Google Maps</a>
+            <a href={mapUrl} target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
           </div>
         </div>
       </section>
@@ -229,7 +173,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
             <strong>Give us a call</strong>
             <span>{KACL_COMPANY_INFO.primaryPhone}</span>
           </a>
-          <a href={whatsappDirectUrl} target="_blank" rel="noreferrer">
+          <a href={whatsappDirectUrl} target="_blank" rel="noopener noreferrer">
             <span className="contact-option-icon">
               <MessageSquare className="w-6 h-6" />
             </span>
@@ -250,24 +194,21 @@ export const ContactView: React.FC<ContactViewProps> = ({
             className="contact-form-panel"
             aria-labelledby="contact-form-heading"
           >
-            {submittedInquiry ? (
+            {prepared ? (
               <div className="contact-success" role="status">
                 <CheckCircle2 className="w-10 h-10" />
                 <span className="contact-kicker">Ready for the next step</span>
                 <h2>Your enquiry is ready.</h2>
                 <p>
-                  Thank you, {submittedInquiry.fullName}. Your draft is saved on
-                  this device. Send it to KACL using one of the options below.
+                  Thank you, {prepared.fullName}. Nothing has been sent yet.
+                  Choose WhatsApp or email below to send your message to KACL.
+                  This website does not store your contact details.
                 </p>
-                <div className="contact-reference">
-                  <span>Your reference</span>
-                  <strong>{submittedInquiry.referenceNumber}</strong>
-                </div>
                 <a
                   className="button-primary"
                   href={sendWhatsApp}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   <MessageSquare className="w-4 h-4" />
                   Send via WhatsApp
@@ -280,7 +221,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                   type="button"
                   className="contact-another"
                   onClick={() => {
-                    setSubmittedInquiry(null);
+                    setPrepared(null);
                     setFormData({
                       fullName: "",
                       organizationName: "",
@@ -290,11 +231,8 @@ export const ContactView: React.FC<ContactViewProps> = ({
                       preferredContact: "phone",
                       deliveryLocation: "",
                       notes: "",
-                      honeypot: "",
                     });
                     setErrors({});
-                    setRateLimitError(null);
-                    setFormRenderedAt(Date.now());
                   }}
                 >
                   Start another enquiry
@@ -315,7 +253,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                       {quotationItems.length === 1 ? "product" : "products"} ·{" "}
                       {Number(
                         quotationItems
-                          .reduce((sum, item) => sum + item.estimatedKg, 0)
+                          .reduce((sum, item) => sum + (item.estimatedKg ?? 0), 0)
                           .toFixed(2),
                       )}{" "}
                       kg estimated
@@ -333,28 +271,6 @@ export const ContactView: React.FC<ContactViewProps> = ({
                 <p className="contact-required-note">
                   Fields marked * are required.
                 </p>
-                {(rateLimitError ||
-                  errors.formRenderedAt ||
-                  errors.honeypot) && (
-                  <div className="contact-error-banner" role="alert">
-                    <AlertCircle className="w-5 h-5" />
-                    <span>
-                      {rateLimitError ||
-                        errors.formRenderedAt ||
-                        errors.honeypot}
-                    </span>
-                  </div>
-                )}
-                <div className="hidden" aria-hidden="true">
-                  <input
-                    type="text"
-                    name="honeypot"
-                    tabIndex={-1}
-                    value={formData.honeypot}
-                    onChange={handleChange}
-                    autoComplete="off"
-                  />
-                </div>
                 <div className="contact-fields">
                   {fields.map((field) => (
                     <div className="contact-field" key={field.name}>
@@ -478,17 +394,15 @@ export const ContactView: React.FC<ContactViewProps> = ({
                   </div>
                 </div>
                 <p className="contact-draft-note">
-                  This form prepares and saves an enquiry on this device. In the
-                  next step, send it to KACL via WhatsApp or email.
+                  This form prepares a message on this page. It does not send or
+                  store your details on our website. You choose whether to send
+                  it via WhatsApp or email.
                 </p>
                 <button
                   className="button-primary contact-submit"
                   type="submit"
-                  disabled={isSubmitting}
                 >
-                  {isSubmitting
-                    ? "Preparing your enquiry..."
-                    : "Prepare my enquiry"}
+                  Prepare my message
                 </button>
               </form>
             )}
@@ -511,7 +425,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
               <a
                 href={mapUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 Find KACL on Google Maps
               </a>

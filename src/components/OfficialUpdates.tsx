@@ -30,19 +30,21 @@ export const OfficialUpdates: React.FC = () => {
     const refresh = async () => {
       try {
         const response = await fetch('/api/official-news', { signal: controller.signal });
-        if (!response.ok) return;
+        if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) return;
         const payload = await response.json();
-        if (!Array.isArray(payload.sources)) return;
+        if (!Array.isArray(payload.sources) || payload.sources.length > 10) return;
         for (const publisher of publishers) {
           const result = payload.sources.find((source: { id: string }) => source.id === publisher.id);
-          if (!result || !['ok', 'stale'].includes(result.status) || !Array.isArray(result.items)) continue;
+          if (!result || !['ok', 'stale'].includes(result.status) || !Array.isArray(result.items) || result.items.length > 50) continue;
           const updates: Update[] = result.items.filter((item: Update) => {
             try {
               const url = new URL(item.url);
+              const timestamp = Date.parse(item.date);
               return typeof item.title === 'string' && item.title.length > 0 && item.title.length <= 300 &&
-                typeof item.id === 'string' && item.source === publisher.name &&
-                Number.isFinite(Date.parse(item.date)) && url.protocol === 'https:' &&
-                url.hostname === publisher.domain && !url.username && !url.password;
+                typeof item.id === 'string' && item.id.length <= 2048 && item.source === publisher.name &&
+                (item.dateLabel === undefined || (typeof item.dateLabel === 'string' && item.dateLabel.length <= 80)) &&
+                Number.isFinite(timestamp) && timestamp <= Date.now() && url.protocol === 'https:' &&
+                url.hostname === publisher.domain && !url.port && !url.username && !url.password && url.href.length <= 2048;
             } catch { return false; }
           }).slice(0, 6);
           if (controller.signal.aborted) return;

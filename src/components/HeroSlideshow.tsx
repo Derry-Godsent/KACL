@@ -192,14 +192,14 @@ export function HeroSlideshow({ children }: { children?: React.ReactNode }) {
         <p className="hero-photo-credit">
           {slide.source ? <>
           Illustrative photography ·{" "}
-          <a href={slide.source} target="_blank" rel="noreferrer">
+          <a href={slide.source} target="_blank" rel="noopener noreferrer">
             {slide.author}
           </a>{" "}
           ·{" "}
           <a
             href="https://creativecommons.org/licenses/by-sa/2.5/"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             CC BY-SA 2.5
           </a>{" "}

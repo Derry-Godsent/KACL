@@ -192,7 +192,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
               className="button-primary"
               href={`https://wa.me/${KACL_COMPANY_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hello KACL, I would like to enquire about your " + (isAbattoir ? "abattoir services." : "meat supply and sales."))}`}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <MessageSquare className="w-4 h-4" />
               Chat with our team

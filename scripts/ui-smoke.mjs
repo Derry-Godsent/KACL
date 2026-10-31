@@ -25,7 +25,7 @@ try {
   assert.equal(resolveNavigation('products:unknown').category, 'all');
   const { ContactView } = await server.ssrLoadModule("/src/views/ContactView.tsx");
   const contact = renderToStaticMarkup(React.createElement(ContactView, {
-    quotationItems: [], onSubmitInquiry: noop, onClearQuotationItems: noop,
+    quotationItems: [], onClearQuotationItems: noop,
   }));
   assert.ok(contact.includes('class="contact-map"'));
   assert.ok(contact.includes('https://maps.google.com/maps?q='));
@@ -43,7 +43,8 @@ try {
     assert.ok(policy.includes('mailto:'));
     assert.ok(policy.includes('tel:'));
     if (tab === 'privacy') {
-      assert.ok(policy.includes('1 January 2026'));
+      assert.ok(policy.includes('31 October 2026'));
+  assert.ok(policy.includes('does not send or store your contact details'));
       assert.ok(policy.includes('Data Protection Act, 2012 (Act 843)'));
       assert.ok(policy.includes('Data Confidentiality'));
     } else {

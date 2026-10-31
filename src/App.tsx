@@ -16,10 +16,7 @@ import { AboutView } from './views/AboutView';
 import { ServicesView } from './views/ServicesView';
 import { FoodSafetyView } from './views/FoodSafetyView';
 import { ProductsView } from './views/ProductsView';
-import { BulkSupplyView } from './views/BulkSupplyView';
 import { OutletsView } from './views/OutletsView';
-import { DeliveryView } from './views/DeliveryView';
-import { NoticesView } from './views/NoticesView';
 import { ContactView } from './views/ContactView';
 import { PoliciesView } from './views/PoliciesView';
 import { INITIAL_OUTLETS } from './data/initialData';
@@ -29,14 +26,12 @@ import { MediaView, type MediaSection } from './views/MediaView';
 // Data & Storage
 import {
   getStoredProducts,
-  getStoredInquiries,
-  saveStoredInquiries,
-  addAuditLog,
   getQuotationCart,
   saveQuotationCart,
+  purgeLegacyPrivateStorage,
   QuotationItem
 } from './lib/storage';
-import { Product, CustomerInquiry } from './types';
+import { Product } from './types';
 import { resolveNavigation } from './lib/navigation';
 import { useSiteMotion } from './lib/useSiteMotion';
 
@@ -47,14 +42,17 @@ export default function App() {
   const [mediaSection, setMediaSection] = useState<MediaSection>('gallery');
   const [navigationRequest, setNavigationRequest] = useState<{ targetId: string | null } | null>(null);
   const [products] = useState<Product[]>(getStoredProducts());
-  const [inquiries, setInquiries] = useState<CustomerInquiry[]>(getStoredInquiries());
 
   // Interactive overlays
   const [quotationItems, setQuotationItems] = useState<QuotationItem[]>(getQuotationCart());
   const [isQuotationDrawerOpen, setIsQuotationDrawerOpen] = useState(false);
   const [activeProductModal, setActiveProductModal] = useState<Product | null>(null);
 
-  // Sync quotation cart changes to localStorage
+  // Remove private data left by older builds, then persist only the non-personal quote cart.
+  useEffect(() => {
+    purgeLegacyPrivateStorage();
+  }, []);
+
   useEffect(() => {
     saveQuotationCart(quotationItems);
   }, [quotationItems]);
@@ -122,18 +120,6 @@ export default function App() {
 
   const handleClearQuotation = () => {
     setQuotationItems([]);
-  };
-
-  const handleNewInquirySubmitted = (newInquiry: CustomerInquiry) => {
-    const updated = [newInquiry, ...inquiries];
-    setInquiries(updated);
-    saveStoredInquiries(updated);
-    addAuditLog(
-      'INQUIRY_RECEIVED',
-      'inquiries',
-      `New enquiry lodged by ${newInquiry.fullName} (${newInquiry.referenceNumber})`,
-      'web_inbound'
-    );
   };
 
   return (
@@ -204,7 +190,6 @@ export default function App() {
         {currentView === 'contact' && (
           <ContactView
             quotationItems={quotationItems}
-            onSubmitInquiry={handleNewInquirySubmitted}
             onClearQuotationItems={handleClearQuotation}
           />
         )}

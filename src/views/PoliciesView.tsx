@@ -58,28 +58,31 @@ export const PoliciesView: React.FC<PoliciesViewProps> = ({ initialTab = 'privac
                   Privacy & Data Protection Policy
                 </h2>
                 <p className="policies-document-note">
-                  Effective Date: 1 January 2026. Compliant with the Data Protection Act, 2012 (Act 843) of the Republic of Ghana.
+                  Effective Date: 31 October 2026. This policy describes how we handle personal data under Ghana’s Data Protection Act, 2012 (Act 843).
                 </p>
               </div>
 
               <section className="space-y-2">
                 <h3 className="policies-section-title">1. Entity Identification & Scope</h3>
                 <p>
-                  This Privacy Policy explains how Kumasi Abattoir Company Limited (referred to as &quot;KACL&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), operating at Kaase Industrial Area, Kumasi, Ghana, collects, uses, stores, and protects corporate and individual information gathered through our official corporate portal, telephone orders, and wholesale quotation requests.
+                  This Privacy Policy explains how Kumasi Abattoir Company Limited (referred to as &quot;KACL&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), operating at Kaase Industrial Area, Kumasi, Ghana, collects, uses, stores, and protects corporate and individual information gathered through our website, telephone orders, WhatsApp, email, and wholesale quotation requests.
                 </p>
               </section>
 
               <section className="space-y-2">
                 <h3 className="policies-section-title">2. Information We Collect</h3>
                 <p>
-                  When institutional clients, commercial buyers, or individual customers interact with KACL, we collect:
+                  The website contact form prepares a message in your browser. It does not send or store your contact details on our website. If you choose to send the message by WhatsApp or email, or contact us by phone, we receive the information you provide, which may include:
                 </p>
                 <ul className="list-disc pl-5 space-y-1.5 text-slate-600">
-                  <li>Contact details: Name, organisation name, corporate email address, and phone number.</li>
+                  <li>Contact details: Name, organisation name, email address, and phone number.</li>
                   <li>Delivery metadata: Delivery site address, Ghana Post Digital Address, and receiving dock contact.</li>
-                  <li>Order specifications: Requested cuts, carcass quantities, scheduled delivery times, and invoicing preferences.</li>
-                  <li>Technical metadata: Form submission timestamps and anti-spam verification tokens.</li>
+                  <li>Order specifications: Requested cuts, quantities, scheduled delivery times, and invoicing preferences.</li>
+                  <li>Technical metadata: Our hosting and communication providers may process IP addresses, request logs, and device information needed to deliver and secure their services.</li>
                 </ul>
+                <p>
+                  The website stores a quotation cart in your browser. The cart contains catalogue items and quantities only, not your name, phone number, email address, or message. You can clear it by removing items or clearing your browser storage.
+                </p>
               </section>
 
               <section className="space-y-2">
@@ -98,7 +101,10 @@ export const PoliciesView: React.FC<PoliciesViewProps> = ({ initialTab = 'privac
               <section className="space-y-2">
                 <h3 className="policies-section-title">4. Data Confidentiality</h3>
                 <p>
-                  KACL does not sell, lease, rent, or trade customer information to third-party marketing companies. Data is disclosed only to authorized staff, logistics drivers, or statutory regulatory officers when required by Ghanaian law.
+                  KACL does not sell, lease, rent, or trade customer information to third-party marketing companies. Data is disclosed only to authorized staff, logistics drivers, or statutory regulatory officers when required by Ghanaian law. WhatsApp, email, Google Fonts and Google Maps are third-party services; when you use them, their own privacy and security practices also apply.
+                </p>
+                <p>
+                  We use HTTPS, access controls and security headers to reduce risk, but no online service can be guaranteed completely secure. Please do not send passwords, payment card details, or other sensitive credentials through the website contact form.
                 </p>
               </section>
 

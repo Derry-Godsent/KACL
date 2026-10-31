@@ -266,7 +266,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="button-light"
               href={whatsapp}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <MessageSquare className="w-4 h-4" />
               Talk to our sales team

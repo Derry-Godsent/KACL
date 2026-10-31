@@ -168,7 +168,7 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
               <a
                 href={whatsappUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 px-6 py-3.5 border border-[#dce6f0] hover:border-[#06457f] bg-white text-[#06457f] text-xs font-mono font-semibold transition-colors min-h-[44px]"
               >
                 <MessageSquare className="w-4 h-4 text-[#0072ce]" />
