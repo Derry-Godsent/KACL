@@ -153,11 +153,11 @@ export const BeefCutsExplorer: React.FC<BeefCutsExplorerProps> = ({
   };
 
   return (
-    <div className="bg-white border border-[#E5E3DB] rounded-lg overflow-hidden shadow-2xs">
+    <div className="bg-white border border-[#dce6f0] rounded-lg overflow-hidden shadow-2xs">
       {/* Explorer Top Banner */}
-      <div className="p-5 sm:p-6 bg-[#0A2618] text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 sm:p-6 bg-[#06457f] text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-sky-300 text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-4 h-4" />
             <span>Interactive Abattoir Butchery Guide</span>
           </div>
@@ -169,8 +169,8 @@ export const BeefCutsExplorer: React.FC<BeefCutsExplorerProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start md:self-auto shrink-0 bg-[#13422B] px-3 py-1.5 rounded text-xs text-emerald-200 border border-emerald-800/40">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+        <div className="flex items-center gap-2 self-start md:self-auto shrink-0 bg-[#0756a3] px-3 py-1.5 rounded text-xs text-sky-200 border border-sky-800/40">
+          <ShieldCheck className="w-4 h-4 text-sky-400" />
           <span>MoFA Certified Butchery Standards</span>
         </div>
       </div>
@@ -180,7 +180,7 @@ export const BeefCutsExplorer: React.FC<BeefCutsExplorerProps> = ({
         <div className="lg:col-span-7 p-6 sm:p-8 bg-[#F8FAFC] flex flex-col justify-between space-y-6">
           <div className="flex items-center justify-between text-xs text-slate-500">
             <span className="font-semibold text-slate-700">Click or tap any cut on the steer diagram:</span>
-            <span className="font-mono text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            <span className="font-mono text-[11px] text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
               Active: {selectedCut.name}
             </span>
           </div>
@@ -220,12 +220,12 @@ export const BeefCutsExplorer: React.FC<BeefCutsExplorerProps> = ({
                       d={cut.anatomyPath}
                       fill={
                         isSelected
-                          ? '#047857'
+                          ? '#0072ce'
                           : '#FFFFFF'
                       }
-                      stroke={isSelected ? '#064E3B' : '#475569'}
+                      stroke={isSelected ? '#062a4e' : '#475569'}
                       strokeWidth={isSelected ? '3' : '1.8'}
-                      className="transition-colors hover:fill-emerald-100"
+                      className="transition-colors hover:fill-sky-100"
                     />
                     {/* Cut Label */}
                     <text
@@ -253,7 +253,7 @@ export const BeefCutsExplorer: React.FC<BeefCutsExplorerProps> = ({
                 onClick={() => setSelectedCutId(cut.id)}
                 className={`px-2.5 py-1 text-xs font-semibold rounded cursor-pointer transition-colors ${
                   selectedCutId === cut.id
-                    ? 'bg-[#0A2618] text-white shadow-xs'
+                    ? 'bg-[#06457f] text-white shadow-xs'
                     : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
                 }`}
               >
@@ -267,7 +267,7 @@ export const BeefCutsExplorer: React.FC<BeefCutsExplorerProps> = ({
         <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-6 bg-white">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="font-mono text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded">
+              <span className="font-mono text-xs font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2.5 py-1 rounded">
                 Code: {selectedCut.matchedCode}
               </span>
               <span className="text-xs font-semibold text-slate-500">
@@ -288,16 +288,16 @@ export const BeefCutsExplorer: React.FC<BeefCutsExplorerProps> = ({
             <div className="p-3.5 bg-[#F8FAFC] border border-slate-200 rounded-lg space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-500 font-semibold flex items-center gap-1.5">
-                  <Flame className="w-3.5 h-3.5 text-emerald-700" />
+                  <Flame className="w-3.5 h-3.5 text-sky-700" />
                   Butchery Tenderness:
                 </span>
-                <span className="font-bold text-[#0A2618]">
+                <span className="font-bold text-[#06457f]">
                   {selectedCut.tenderness}
                 </span>
               </div>
               <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                 <div
-                  className="bg-[#047857] h-full rounded-full transition-all duration-500"
+                  className="bg-[#0072ce] h-full rounded-full transition-all duration-500"
                   style={{
                     width:
                       selectedCut.tenderness === 'Supreme Tender'
@@ -340,8 +340,8 @@ export const BeefCutsExplorer: React.FC<BeefCutsExplorerProps> = ({
               onClick={handleAdd}
               className={`w-full py-3 px-4 rounded text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer min-h-[44px] ${
                 addedCutId === selectedCut.id
-                  ? 'bg-emerald-800 text-white'
-                  : 'bg-[#0A2618] hover:bg-[#123C27] text-white shadow-xs'
+                  ? 'bg-sky-800 text-white'
+                  : 'bg-[#06457f] hover:bg-[#06457f] text-white shadow-xs'
               }`}
             >
               {addedCutId === selectedCut.id ? (

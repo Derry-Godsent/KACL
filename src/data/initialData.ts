@@ -51,25 +51,24 @@ export const KACL_CORE_VALUES = [
 ];
 
 export const KACL_BOARD_MEMBERS: BoardMember[] = [
-  { role: 'Chairman', name: 'Nana Opoku-Agyemang' },
-  { role: 'Secretary', name: 'Henry Orraca Tetteh Esq' },
-  { role: 'Member', name: 'Andrews Kofi Nti' },
-  { role: 'Member', name: 'Hon. Nana Yaw Wiredu' },
-  { role: 'Member', name: 'Samuel Pyne' },
-  { role: 'Member', name: 'Kwasi Kyei' },
-  { role: 'Member', name: 'Joe Owusu Boadi' },
-  { role: 'Member', name: 'Sulemana Sampson' },
-  { role: 'Member', name: 'Sumaila Seidu' },
-  { role: 'Member', name: 'Alhaji Abdulai Thahiru' }
+  { role: 'Chairman', name: 'Mr. Opoku Da-Rocha', portraitUrl: '/images/leadership/board-chairman.jpg' },
+  { role: 'Secretary', name: 'Mr. Henry Oracca-Tetteh', portraitUrl: '/images/leadership/henry-orraca-tetteh.jpg' },
+  { role: 'Member', name: 'Mr. Abdul Rauf Saeed', portraitUrl: '/images/leadership/abdul-rauf-saeed.jpg' },
+  { role: 'Member', name: 'Alhaji Abdulai Tahiru Ansah', portraitUrl: '/images/leadership/abdulai-thahiru.jpg' },
+  { role: 'Member', name: 'Rev. Joseph Amo', portraitUrl: '/images/leadership/joseph-amo.jpg' },
+  { role: 'Member', name: 'Mr. Zakaria Mohammed', portraitUrl: '/images/leadership/zakaria-mohammed.jpg' },
+  { role: 'Member', name: 'Mr. Sampson Sulemana', portraitUrl: '/images/leadership/sulemana-sampson.jpg' },
+  { role: 'Member', name: 'Mr. Sumaila Seidu', portraitUrl: '/images/leadership/sumaila-seidu.jpg' }
 ];
 
 export const KACL_MANAGEMENT: ManagementMember[] = [
-  { position: 'Managing Director', name: 'Alhaji Alhassan A. Mahamadu', department: 'Executive Management' },
-  { position: 'Admin/HR Manager', name: 'Mrs. Elizabeth Ahlijah Tetteh', department: 'Administration/Human Resources' },
+  { position: 'Managing Director', name: 'Alhaji Alhassan A. Mahamadu', department: 'Executive Management', portraitUrl: '/images/leadership/alhassan-mahamadu.jpg' },
+  { position: 'Admin/HR Manager', name: 'Mrs. Elizabeth Ahlijah Tetteh', department: 'Administration/Human Resources', portraitUrl: '/images/leadership/elizabeth-ahlijah.jpg' },
   { position: 'Production Manager', name: 'Michael Tongban', department: 'Production' },
-  { position: 'Finance Head', name: 'Daniel Boateng Siaw', department: 'Finance' },
-  { position: 'Marketing Head', name: 'Samuel Boison', department: 'Marketing/Processing' },
-  { position: 'Internal Auditor', name: 'Gregory Berchie', department: 'Audit' }
+  { position: 'Finance Head', name: 'Daniel Boateng Siaw', department: 'Finance', portraitUrl: '/images/leadership/daniel-boateng-siaw.jpg' },
+  { position: 'Marketing Head', name: 'Samuel Boison', department: 'Marketing/Processing', portraitUrl: '/images/leadership/samuel-boison.jpg' },
+  { position: 'Internal Auditor', name: 'Gregory Berchie', department: 'Audit', portraitUrl: '/images/leadership/gregory-berchie.jpg' },
+  { position: 'Head, Engineering Unit', name: 'Ebenezer Awuah Kusi', department: 'Engineering Unit', portraitUrl: '/images/leadership/ebenezer-awuah-kusi.jpg' }
 ];
 
 export const KACL_DEPARTMENTS = [
@@ -723,51 +722,17 @@ export const INITIAL_SERVICES: ServiceItem[] = [
 ];
 
 export const INITIAL_OUTLETS: RetailOutlet[] = [
-  {
-    id: 'outlet-001',
-    name: 'KACL Main Complex Butchery Outlet',
-    locationArea: 'Kaase / Ahinsan Industrial Area, Kumasi',
-    ghanaPostAddress: 'AK-373-6444',
-    landmark: 'Main Administration & Dispatch Bay, Kumasi Abattoir Complex',
-    phoneNumber: '0202 015 746',
-    operatingHours: 'Mon to Fri: 8am - 5pm. Sat: 8am - 4pm. Sun: 8am - 2pm.',
-    cutsAvailable: 'Full beef cuts, mutton/chevon, pork cuts, and processed sausages',
-    deliveryPickupAvailable: true
-  },
-  {
-    id: 'outlet-002',
-    name: 'Poku Trading Partner Deep Freezers',
-    locationArea: 'Kumasi Metropolis Partner Stores',
-    ghanaPostAddress: 'AK-039-4412',
-    landmark: 'Poku Trading Supermarket Meat Freezers, Kumasi',
-    phoneNumber: '0577 361 460',
-    operatingHours: 'Monday to Saturday: 8:00 AM - 6:00 PM',
-    cutsAvailable: 'Vacuum-packed prime cuts, minced beef, burger patties, beef sausages',
-    deliveryPickupAvailable: true
-  },
-  {
-    id: 'outlet-003',
-    name: 'KATH Institutional Supply Desk',
-    locationArea: 'Komfo Anokye Hospital Receiving Dock',
-    ghanaPostAddress: 'AK-001-9988',
-    landmark: 'Komfo Anokye Teaching Hospital Receiving Dock, Kumasi',
-    phoneNumber: '0577 361 443',
-    operatingHours: 'Scheduled Institutional Van Delivery Runs',
-    cutsAvailable: 'Contract lean stew beef, boneless beef, hospital catering portions',
-    deliveryPickupAvailable: true
-  },
-  {
-    id: 'outlet-004',
-    name: 'KNUST Institutional Supply Desk',
-    locationArea: 'KNUST Campus Commercial Gate',
-    ghanaPostAddress: 'AK-088-2100',
-    landmark: 'KNUST Canteen and Staff Receiving Center',
-    phoneNumber: '0577 361 444',
-    operatingHours: 'Scheduled Institutional Van Delivery Runs',
-    cutsAvailable: 'Bulk catering cubes, beef quarters, minced beef, processed sausages',
-    deliveryPickupAvailable: true
-  }
-];
+  'Kumasi Abattoir Container Meat Shop',
+  'Poku Trading, Adum',
+  'JP Filling Station-Ahinsan',
+  'JP Filling Station-KNUST',
+  'KNUST Commercial Center',
+].map((name, index) => ({
+  id: `outlet-${String(index + 1).padStart(3, '0')}`,
+  name,
+  locationArea: '', ghanaPostAddress: '', landmark: '', phoneNumber: '',
+  operatingHours: '', cutsAvailable: '', deliveryPickupAvailable: false,
+}));
 
 export const INITIAL_NOTICES: PublicNotice[] = [
   {
@@ -790,56 +755,8 @@ export const INITIAL_NOTICES: PublicNotice[] = [
   }
 ];
 
-export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
-  {
-    id: 'med-01',
-    type: 'notice',
-    title: 'Veterinary Certification Protocol on Food Animals',
-    date: '2026-10-15',
-    summary: 'Rigorous ante-mortem and post-mortem inspection standards across cattle, sheep, goats, and pigs.',
-    content: 'Full report on the mandatory veterinary condemnation and disposal guidelines enforced at Kumasi Abattoir.'
-  },
-  {
-    id: 'med-02',
-    type: 'press_release',
-    title: 'Expansion of Branded Cold Van Door-to-Door Delivery Routes',
-    date: '2026-09-20',
-    summary: 'Increasing refrigerated delivery frequency to KNUST, KATH, and regional educational institutions in Kumasi.',
-    content: 'KACL has deployed additional insulated temperature-controlled cold vans to meet rising demand from culinary and health institutions.'
-  },
-  {
-    id: 'med-03',
-    type: 'news',
-    title: 'Clean LPG Singeing System Sets Benchmark for Meat Wholesomeness',
-    date: '2026-08-10',
-    summary: 'Modern LPG-fueled singeing replaces unhygienic traditional methods, safeguarding public health in Ashanti Region.',
-    content: 'An overview of KACL environmentally compliant singeing technology that eliminates noxious smoke and residues from carcass skins.'
-  },
-  {
-    id: 'med-04',
-    type: 'gallery',
-    title: 'KACL Modern Processing Complex in Kaase',
-    date: '2026-08-01',
-    summary: 'Facility exterior, cold dispatch loading docks, and livestock holding kraals.',
-    imageUrl: '/src/assets/images/hero_facility_exterior_1793281354921.jpg'
-  },
-  {
-    id: 'med-05',
-    type: 'gallery',
-    title: 'Veterinary Inspection and Cold Chain Hall',
-    date: '2026-08-01',
-    summary: 'Stainless steel dressing line and post-mortem certification station.',
-    imageUrl: '/src/assets/images/processing_inspection_1793281367767.jpg'
-  },
-  {
-    id: 'med-06',
-    type: 'gallery',
-    title: 'Branded Refrigerated Cold Van Delivery Fleet',
-    date: '2026-08-01',
-    summary: 'Temperature-controlled logistics for bulk and door-to-door supply across Kumasi.',
-    imageUrl: '/src/assets/images/refrigerated_logistics_1793281380810.jpg'
-  }
-];
+// No company-authored media has been supplied for publication.
+export const INITIAL_MEDIA_ITEMS: MediaItem[] = [];
 
 export const INITIAL_INQUIRIES: CustomerInquiry[] = [
   {

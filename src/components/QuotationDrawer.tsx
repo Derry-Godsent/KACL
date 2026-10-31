@@ -46,19 +46,19 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
         aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10 w-full sm:w-auto">
-        <div className="w-full sm:w-[460px] max-w-full bg-[#FAF9F5] border-l border-[#E5E3DB] flex flex-col shadow-2xl">
+      <div className="motion-drawer-panel fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10 w-full sm:w-auto">
+        <div className="w-full sm:w-[460px] max-w-full bg-[#f7fbff] border-l border-[#dce6f0] flex flex-col shadow-2xl">
           {/* Header */}
-          <div className="p-6 border-b border-[#E5E3DB] flex items-center justify-between bg-white">
+          <div className="p-6 border-b border-[#dce6f0] flex items-center justify-between bg-white">
             <div className="space-y-1">
-              <span className="font-mono text-[11px] text-[#047857] uppercase tracking-wider font-semibold">
-                Commercial RFQ
+              <span className="font-mono text-[11px] text-[#0072ce] uppercase tracking-wider font-semibold">
+                Ready when you are
               </span>
-              <h2 className="font-serif text-xl sm:text-2xl text-[#0A2618]">
-                Quotation Draft
+              <h2 className="font-serif text-xl sm:text-2xl text-[#06457f]">
+                Your quote cart
               </h2>
               <p className="font-mono text-xs text-slate-500">
-                {items.length} {items.length === 1 ? 'item' : 'items'} in current requisition
+                {items.length} {items.length === 1 ? 'item' : 'items'} ready for a quote
               </p>
             </div>
             <button
@@ -76,22 +76,22 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
               <div className="text-center py-16 px-4 space-y-3">
                 <div className="font-serif text-lg text-slate-600">No items selected yet</div>
                 <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
-                  Browse the wholesale catalogue or cuts ledger and select &quot;Add to Quotation Draft&quot; to compile your supply requirements.
+                  Browse the wholesale catalogue or cuts ledger and select &quot;Add to Your quote cart&quot; to compile your supply requirements.
                 </p>
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="flex justify-between items-center text-xs pb-2 border-b border-[#E5E3DB]">
-                  <span className="font-mono text-[11px] uppercase text-slate-400">Selected Product Specifications</span>
+                <div className="flex justify-between items-center text-xs pb-2 border-b border-[#dce6f0]">
+                  <span className="font-mono text-[11px] uppercase text-slate-400">Selected products</span>
                   <button
                     onClick={onClearAll}
                     className="font-mono text-xs text-rose-700 hover:text-rose-900 cursor-pointer font-medium"
                   >
-                    Clear Requisition
+                    Clear cart
                   </button>
                 </div>
 
-                <div className="divide-y divide-[#E5E3DB] border border-[#E5E3DB] bg-white">
+                <div className="divide-y divide-[#dce6f0] border border-[#dce6f0] bg-white">
                   {items.map((item) => (
                     <div
                       key={item.productId}
@@ -99,10 +99,10 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-0.5">
-                          <span className="text-[11px] font-mono text-[#047857] font-semibold uppercase">
+                          <span className="text-[11px] font-mono text-[#0072ce] font-semibold uppercase">
                             {item.code}
                           </span>
-                          <h4 className="text-sm font-bold text-[#0A2618]">
+                          <h4 className="text-sm font-bold text-[#06457f]">
                             {item.productName}
                           </h4>
                           <span className="text-[11px] text-slate-400 font-mono block">
@@ -113,24 +113,26 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
                           onClick={() => onRemoveItem(item.productId)}
                           className="p-1 text-slate-400 hover:text-rose-700 cursor-pointer"
                           title="Remove item"
+                          aria-label={`Remove ${item.productName} from cart`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-[#E5E3DB] text-xs">
+                      <div className="flex items-center justify-between pt-2 border-t border-[#dce6f0] text-xs">
                         <label htmlFor={`kg-input-${item.productId}`} className="text-slate-600 font-medium">Estimated Weight:</label>
                         <div className="flex items-center gap-1.5">
                           <input
                             id={`kg-input-${item.productId}`}
                             type="number"
-                            min="5"
-                            step="5"
-                            value={item.estimatedKg || 10}
+                            min="1"
+                            max="10000"
+                            step="any"
+                            value={item.estimatedKg || 1}
                             onChange={(e) =>
-                              onUpdateQuantity(item.productId, Math.max(5, parseInt(e.target.value) || 0))
+                              onUpdateQuantity(item.productId, Math.min(10000, Math.max(1, parseFloat(e.target.value) || 1)))
                             }
-                            className="w-20 px-2 py-1 bg-[#FAF9F5] border border-[#E5E3DB] text-right font-mono text-xs tabular-nums focus:outline-none focus:border-[#0A2618]"
+                            className="w-20 px-2 py-1 bg-[#f7fbff] border border-[#dce6f0] text-right font-mono text-xs tabular-nums focus:outline-none focus:border-[#06457f]"
                           />
                           <span className="font-mono font-bold text-slate-700 text-xs">kg</span>
                         </div>
@@ -144,10 +146,10 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
 
           {/* Footer actions */}
           {items.length > 0 && (
-            <div className="p-6 border-t border-[#E5E3DB] bg-white space-y-4">
-              <div className="flex justify-between items-center text-xs pb-3 border-b border-[#E5E3DB]">
+            <div className="p-6 border-t border-[#dce6f0] bg-white space-y-4">
+              <div className="flex justify-between items-center text-xs pb-3 border-b border-[#dce6f0]">
                 <span className="font-mono text-slate-500 uppercase">Total Estimated Weight:</span>
-                <span className="font-mono font-bold text-[#0A2618] text-base tabular-nums">
+                <span className="font-mono font-bold text-[#06457f] text-base tabular-nums">
                   {totalEstimatedKg} kg
                 </span>
               </div>
@@ -157,9 +159,9 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
                   onClose();
                   onProceedToForm();
                 }}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#0A2618] hover:bg-[#123C27] text-white text-xs font-mono font-semibold transition-colors cursor-pointer min-h-[44px]"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#06457f] hover:bg-[#06457f] text-white text-xs font-mono font-semibold transition-colors cursor-pointer min-h-[44px]"
               >
-                <span>Proceed to Formal RFQ Form</span>
+                <span>Request a quote</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
@@ -167,9 +169,9 @@ export const QuotationDrawer: React.FC<QuotationDrawerProps> = ({
                 href={whatsappUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 border border-[#E5E3DB] hover:border-[#0A2618] bg-white text-[#0A2618] text-xs font-mono font-semibold transition-colors min-h-[44px]"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 border border-[#dce6f0] hover:border-[#06457f] bg-white text-[#06457f] text-xs font-mono font-semibold transition-colors min-h-[44px]"
               >
-                <MessageSquare className="w-4 h-4 text-[#047857]" />
+                <MessageSquare className="w-4 h-4 text-[#0072ce]" />
                 <span>Send Quotation via WhatsApp</span>
               </a>
 

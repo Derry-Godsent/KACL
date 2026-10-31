@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ShieldCheck, Play, Pause, RefreshCw, Scissors, Check, Flame, Truck, Award, Sparkles } from 'lucide-react';
 
 interface AbattoirProcessAnimationProps {
@@ -20,26 +20,51 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
   const [activeTab, setActiveTab] = useState<'cutting' | 'processing-line'>(initialMode);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [sliceProgress, setSliceProgress] = useState<number>(0);
-  const [sliceCount, setSliceCount] = useState<number>(3);
+  const [sliceCount, setSliceCount] = useState<number>(0);
+  const [isCutting, setIsCutting] = useState(false);
+  const cuttingRef = useRef(false);
+  const cutOnce = () => {
+    if (cuttingRef.current) return;
+    cuttingRef.current = true;
+    setSliceProgress(0);
+    setIsCutting(true);
+  };
   const [cutType, setCutType] = useState<'fillet' | 'tbone' | 'brisket'>('fillet');
   const [currentLineStep, setCurrentLineStep] = useState<number>(0);
 
-  // Meat cutting knife stroke cycle
+  // One deliberate input produces exactly one stroke. No automatic cutting.
   useEffect(() => {
-    if (!isPlaying || activeTab !== 'cutting') return;
-
-    const interval = setInterval(() => {
-      setSliceProgress((prev) => {
-        const next = (prev + 1) % 100;
-        if (next === 0) {
-          setSliceCount((c) => (c >= 6 ? 1 : c + 1));
-        }
-        return next;
-      });
-    }, 45);
-
-    return () => clearInterval(interval);
-  }, [isPlaying, activeTab]);
+    if (activeTab !== 'cutting') {
+      cuttingRef.current = false;
+      setIsCutting(false);
+      setSliceProgress(0);
+      return;
+    }
+    if (!isCutting) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setSliceCount(count => count + 1);
+      setSliceProgress(0);
+      cuttingRef.current = false;
+      setIsCutting(false);
+      return;
+    }
+    let frame: number;
+    let start: number | null = null;
+    const stroke = (time: number) => {
+      start ??= time;
+      const progress = Math.min(100, ((time - start) / 900) * 100);
+      setSliceProgress(progress);
+      if (progress < 100) frame = window.requestAnimationFrame(stroke);
+      else {
+        setSliceCount(count => count + 1);
+        setSliceProgress(0);
+        cuttingRef.current = false;
+        setIsCutting(false);
+      }
+    };
+    frame = window.requestAnimationFrame(stroke);
+    return () => window.cancelAnimationFrame(frame);
+  }, [isCutting, activeTab]);
 
   // Overhead Processing line conveyor cycle (Kraal -> Singeing/Flaying -> 4-Quartering -> Prime Cuts -> Cold Dispatch)
   useEffect(() => {
@@ -47,20 +72,17 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
 
     const interval = setInterval(() => {
       setCurrentLineStep((prev) => (prev + 1) % 5);
-    }, 3200);
+    }, 8000);
 
     return () => clearInterval(interval);
   }, [isPlaying, activeTab]);
 
-  // Knife position calculation: stroke down at 30%-60%
-  const isSlicingDown = sliceProgress >= 25 && sliceProgress <= 65;
-  const knifeY = isSlicingDown
-    ? 60 + Math.sin(((sliceProgress - 25) / 40) * Math.PI) * 45
-    : 45;
-  const knifeAngle = isSlicingDown
-    ? -8 + Math.sin(((sliceProgress - 25) / 40) * Math.PI) * 16
-    : -8;
-  const cutDepth = Math.max(0, Math.min(100, (sliceProgress - 25) * 2.5));
+  // Smooth down-and-up motion across one complete user-triggered stroke.
+  const isSlicingDown = isCutting && sliceProgress >= 25 && sliceProgress <= 75;
+  const strokeDepth = Math.sin((sliceProgress / 100) * Math.PI);
+  const knifeY = 45 + strokeDepth * 60;
+  const knifeAngle = -8 + strokeDepth * 14;
+  const cutDepth = isCutting ? Math.max(0, Math.min(100, (sliceProgress - 25) * 2.5)) : 0;
 
   const processingSteps = [
     {
@@ -108,30 +130,30 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
   return (
     <div className={`bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden ${className}`}>
       {/* Header Bar: Title & Mode Selector (No Gold, Deep Heritage Green & Surgical Steel) */}
-      <div className="bg-[#0A2618] px-4 py-3 sm:px-5 sm:py-3.5 flex flex-wrap items-center justify-between gap-3 text-white border-b border-[#123C27]">
+      <div className="bg-[#06457f] px-4 py-3 sm:px-5 sm:py-3.5 flex flex-wrap items-center justify-between gap-3 text-white border-b border-[#06457f]">
         <div className="flex items-center gap-2.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse" />
           <div>
             <h3 className="text-xs sm:text-sm font-black tracking-tight flex items-center gap-2">
               <span>KACL LIVE ABATTOIR PROCESS SIMULATOR</span>
-              <span className="hidden sm:inline-block text-[10px] font-mono font-normal uppercase bg-[#047857] px-2 py-0.5 rounded text-emerald-100">
+              <span className="hidden sm:inline-block text-[10px] font-mono font-normal uppercase bg-[#0072ce] px-2 py-0.5 rounded text-sky-100">
                 Act 179 Standard
               </span>
             </h3>
-            <p className="text-[11px] text-emerald-200/90 font-mono">
+            <p className="text-[11px] text-sky-200/90 font-mono">
               Live automated butchery & veterinary processing line
             </p>
           </div>
         </div>
 
         {/* Mode Switcher Tabs */}
-        <div className="flex items-center gap-1.5 bg-[#071D12] p-1 rounded-lg border border-[#16442D]">
+        <div className="flex items-center gap-1.5 bg-[#07121d] p-1 rounded-lg border border-[#162d44]">
           <button
             type="button"
             onClick={() => setActiveTab('cutting')}
             className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'cutting'
-                ? 'bg-[#047857] text-white shadow-xs'
+                ? 'bg-[#0072ce] text-white shadow-xs'
                 : 'text-slate-300 hover:text-white'
             }`}
           >
@@ -143,7 +165,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
             onClick={() => setActiveTab('processing-line')}
             className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'processing-line'
-                ? 'bg-[#047857] text-white shadow-xs'
+                ? 'bg-[#0072ce] text-white shadow-xs'
                 : 'text-slate-300 hover:text-white'
             }`}
           >
@@ -154,7 +176,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
       </div>
 
       {/* Main Animation Stage */}
-      <div className="p-4 sm:p-6 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative min-h-[300px]">
+      <div className="p-4 sm:p-6 bg-slate-100 relative min-h-[300px]">
         {/* ======================================================== */}
         {/* MODE 1: MEAT BEING CUT ANIMATION                         */}
         {/* ======================================================== */}
@@ -170,7 +192,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                     onClick={() => setCutType('fillet')}
                     className={`px-2.5 py-1 rounded text-[11px] font-bold cursor-pointer transition-colors ${
                       cutType === 'fillet'
-                        ? 'bg-white text-[#0A2618] shadow-2xs border border-slate-200'
+                        ? 'bg-white text-[#06457f] shadow-2xs border border-slate-200'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -181,7 +203,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                     onClick={() => setCutType('tbone')}
                     className={`px-2.5 py-1 rounded text-[11px] font-bold cursor-pointer transition-colors ${
                       cutType === 'tbone'
-                        ? 'bg-white text-[#0A2618] shadow-2xs border border-slate-200'
+                        ? 'bg-white text-[#06457f] shadow-2xs border border-slate-200'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -192,7 +214,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                     onClick={() => setCutType('brisket')}
                     className={`px-2.5 py-1 rounded text-[11px] font-bold cursor-pointer transition-colors ${
                       cutType === 'brisket'
-                        ? 'bg-white text-[#0A2618] shadow-2xs border border-slate-200'
+                        ? 'bg-white text-[#06457f] shadow-2xs border border-slate-200'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -202,28 +224,29 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 text-[11px] font-mono text-emerald-800 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#047857]" />
+                <div className="flex items-center gap-1.5 text-[11px] font-mono text-sky-800 bg-sky-50 px-2 py-1 rounded border border-sky-200">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#0072ce]" />
                   <span>Vet Inspection: PASSED</span>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="p-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
-                  title={isPlaying ? 'Pause Animation' : 'Play Animation'}
+                  onClick={cutOnce}
+                  disabled={isCutting}
+                  className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-lg bg-[#0756a3] px-5 py-3 text-sm font-bold text-white hover:bg-[#06457f] disabled:opacity-60 cursor-pointer disabled:cursor-wait focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0072ce]"
                 >
-                  {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                  <Scissors className="w-5 h-5" aria-hidden="true" />
+                  {isCutting ? 'Cutting…' : 'Cut once'}
                 </button>
               </div>
             </div>
 
             {/* The Butchery Block SVG Canvas */}
-            <div className="relative w-full h-64 sm:h-72 bg-gradient-to-b from-[#1E293B] via-[#0F172A] to-[#0B1120] rounded-xl overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
+            <div className="relative w-full h-64 sm:h-72 bg-slate-800 rounded-xl overflow-hidden border border-slate-700 shadow-inner flex items-center justify-center">
               {/* Surgical Stainless Steel Table Texture & Grid Lines */}
-              <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#94A3B8_1px,transparent_1px)] [background-size:16px_16px]" />
+              <div className="absolute inset-0 opacity-15 bg-transparent [background-size:16px_16px]" />
 
               {/* Stainless Steel Overhead Light Glint */}
-              <div className="absolute top-0 left-1/4 w-1/2 h-8 bg-gradient-to-b from-white/20 to-transparent blur-md pointer-events-none" />
+              <div className="absolute top-0 left-1/4 w-1/2 h-8 bg-slate-400 blur-md pointer-events-none" />
 
               {/* Rulers on butchery block */}
               <div className="absolute bottom-2 left-6 right-6 flex justify-between text-[9px] font-mono text-slate-400 border-t border-slate-700 pt-1">
@@ -268,8 +291,8 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
 
                   {/* Laser Cut Guide */}
                   <linearGradient id="laserGuide" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#047857" stopOpacity="0.1" />
+                    <stop offset="0%" stopColor="#28a8df" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#0072ce" stopOpacity="0.1" />
                   </linearGradient>
                 </defs>
 
@@ -278,8 +301,8 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                 <rect x="90" y="165" width="420" height="8" rx="2" fill="#334155" opacity="0.6" />
 
                 {/* Stainless Table Guide Lasers (Shows Precision Cut Thickness) */}
-                <line x1="310" y1="90" x2="310" y2="165" stroke="#10B981" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
-                <text x="316" y="105" fill="#34D399" fontSize="10" fontFamily="monospace" fontWeight="bold">
+                <line x1="310" y1="90" x2="310" y2="165" stroke="#28a8df" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
+                <text x="316" y="105" fill="#56c5eb" fontSize="10" fontFamily="monospace" fontWeight="bold">
                   PRECISION CUT LINE: 25mm
                 </text>
 
@@ -369,7 +392,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                   />
 
                   {/* Knife Handle (Ergonomic Butcher Composite Handle) */}
-                  <rect x="0" y="-35" width="22" height="48" rx="4" fill="#0A2618" stroke="#164E33" strokeWidth="1.5" />
+                  <rect x="0" y="-35" width="22" height="48" rx="4" fill="#06457f" stroke="#16324e" strokeWidth="1.5" />
                   {/* Brass/Steel rivets on handle */}
                   <circle cx="11" cy="-24" r="2.5" fill="#E2E8F0" />
                   <circle cx="11" cy="-11" r="2.5" fill="#E2E8F0" />
@@ -406,11 +429,11 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
 
                 {/* VETERINARY APPROVAL INK STAMP (Appears periodically) */}
                 <g transform="translate(120, 40)" opacity={isSlicingDown ? '1' : '0.85'} className="transition-opacity">
-                  <rect x="0" y="0" width="130" height="34" rx="6" fill="#047857" opacity="0.9" stroke="#10B981" strokeWidth="1.5" />
+                  <rect x="0" y="0" width="130" height="34" rx="6" fill="#0072ce" opacity="0.9" stroke="#28a8df" strokeWidth="1.5" />
                   <text x="14" y="16" fill="#FFFFFF" fontSize="9" fontFamily="sans-serif" fontWeight="900" letterSpacing="0.5">
                     MOFA VET INSPECTED
                   </text>
-                  <text x="14" y="27" fill="#A7F3D0" fontSize="8" fontFamily="monospace" fontWeight="bold">
+                  <text x="14" y="27" fill="#b9e9fa" fontSize="8" fontFamily="monospace" fontWeight="bold">
                     WHOLESOME · KACL-VET
                   </text>
                 </g>
@@ -418,15 +441,27 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
 
               {/* Live Metric Overlay Badges */}
               <div className="absolute top-3 right-3 flex flex-col gap-1.5 items-end">
-                <span className="bg-[#0A2618]/90 text-white font-mono text-[10px] px-2 py-0.5 rounded border border-emerald-500/40 font-bold flex items-center gap-1 shadow-xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <span className="bg-[#06457f]/90 text-white font-mono text-[10px] px-2 py-0.5 rounded border border-sky-500/40 font-bold flex items-center gap-1 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping" />
                   CUT DEPTH: {Math.round(cutDepth)}%
                 </span>
                 <span className="bg-slate-900/85 text-slate-300 font-mono text-[10px] px-2 py-0.5 rounded border border-slate-700">
                   SLICES PREPARED: {sliceCount}
                 </span>
               </div>
+              <button
+                type="button"
+                className="absolute inset-0 z-10 cursor-pointer rounded-xl bg-transparent disabled:cursor-wait focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-sky-300 touch-manipulation"
+                onClick={cutOnce}
+                disabled={isCutting}
+                aria-label="Cut the meat once"
+                aria-describedby="cutting-instructions"
+              />
             </div>
+            <p id="cutting-instructions" className="text-sm font-medium text-[#06457f]" role="status" aria-live="polite">
+              {isCutting ? 'Cutting…' : 'Tap or click the meat to cut, or press Cut once.'}
+              {' '}{sliceCount} {sliceCount === 1 ? 'slice' : 'slices'} prepared.
+            </p>
 
             {/* Explanatory Technical Notes */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-[11px] text-slate-600">
@@ -461,25 +496,28 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono text-emerald-800 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
-                  Current Station: {processingSteps[currentLineStep].title}
-                </span>
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:items-end">
                 <button
                   type="button"
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="p-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
-                  title={isPlaying ? 'Pause Animation' : 'Play Animation'}
+                  onClick={() => setIsPlaying(previous => !previous)}
+                  className="inline-flex min-h-[48px] items-center justify-center gap-2.5 rounded-lg border border-[#0756a3] bg-[#0756a3] px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#06457f] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0072ce] cursor-pointer"
                 >
-                  {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                  {isPlaying ? <Pause className="w-5 h-5" aria-hidden="true" /> : <Play className="w-5 h-5" aria-hidden="true" />}
+                  {isPlaying ? 'Pause animation' : 'Play animation'}
                 </button>
+                <span className="text-xs text-slate-600">
+                  {isPlaying ? 'Each stage plays for 8 seconds.' : 'Paused. Press Play animation to continue.'}
+                </span>
+                <span className="text-[11px] font-mono text-sky-800 bg-sky-50 px-2 py-1 rounded border border-sky-200">
+                  Current Station: {processingSteps[currentLineStep].title}
+                </span>
               </div>
             </div>
 
             {/* Overhead Conveyor Rail SVG Scene */}
-            <div className="relative w-full h-72 sm:h-80 bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A] rounded-xl overflow-hidden border border-slate-700 shadow-inner flex flex-col justify-between p-4">
+            <div className="relative w-full h-72 sm:h-80 bg-slate-800 rounded-xl overflow-hidden border border-slate-700 shadow-inner flex flex-col justify-between p-4">
               {/* Stainless Overhead Rail Beam */}
-              <div className="w-full h-4 bg-gradient-to-b from-slate-400 via-slate-200 to-slate-500 rounded relative shadow-md">
+              <div className="w-full h-4 bg-slate-400 rounded relative shadow-md">
                 <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-600" />
                 {/* Overhead Trolley Hooks Moving Along Rail */}
                 <div
@@ -502,18 +540,22 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                     <button
                       key={step.num}
                       type="button"
-                      onClick={() => setCurrentLineStep(idx)}
+                      onClick={() => {
+                        setCurrentLineStep(idx);
+                        setIsPlaying(false);
+                      }}
+                      aria-pressed={isActive}
                       className={`text-left p-2 rounded-lg transition-all cursor-pointer border ${
                         isActive
-                          ? 'bg-[#0A2618]/90 border-emerald-400 text-white shadow-md scale-102 ring-1 ring-emerald-400/50'
+                          ? 'bg-[#06457f]/90 border-sky-400 text-white shadow-md scale-102 ring-1 ring-sky-400/50'
                           : 'bg-slate-800/60 border-slate-700 text-slate-300 hover:bg-slate-800'
                       }`}
                     >
                       <div className="flex items-center justify-between text-[10px] font-mono font-bold mb-1">
-                        <span className={isActive ? 'text-emerald-400' : 'text-slate-400'}>
+                        <span className={isActive ? 'text-sky-400' : 'text-slate-400'}>
                           STAGE {step.num}
                         </span>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />}
+                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping" />}
                       </div>
                       <div className="text-xs font-bold leading-tight line-clamp-1">{step.title}</div>
                       <div className="text-[10px] text-slate-400 mt-1 hidden sm:block line-clamp-2">
@@ -527,16 +569,16 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
               {/* Central Dynamic Processing Stage Visual */}
               <div className="my-2 p-3 bg-slate-900/80 rounded-lg border border-slate-700/80 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-[#0A2618] border border-emerald-500/40 flex items-center justify-center shrink-0 text-emerald-400">
+                  <div className="w-12 h-12 rounded-xl bg-[#06457f] border border-sky-500/40 flex items-center justify-center shrink-0 text-sky-400">
                     {currentLineStep === 0 && <ShieldCheck className="w-6 h-6" />}
                     {currentLineStep === 1 && <Flame className="w-6 h-6 text-orange-400" />}
-                    {currentLineStep === 2 && <Scissors className="w-6 h-6 text-emerald-400" />}
-                    {currentLineStep === 3 && <Sparkles className="w-6 h-6 text-emerald-300" />}
-                    {currentLineStep === 4 && <Truck className="w-6 h-6 text-emerald-400" />}
+                    {currentLineStep === 2 && <Scissors className="w-6 h-6 text-sky-400" />}
+                    {currentLineStep === 3 && <Sparkles className="w-6 h-6 text-sky-300" />}
+                    {currentLineStep === 4 && <Truck className="w-6 h-6 text-sky-400" />}
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold text-emerald-400 uppercase">
+                      <span className="text-xs font-mono font-bold text-sky-400 uppercase">
                         Active Step: {processingSteps[currentLineStep].badge}
                       </span>
                       <span className="text-[10px] text-slate-400">
@@ -560,7 +602,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
                   <button
                     type="button"
                     onClick={() => setCurrentLineStep((prev) => (prev + 1) % 5)}
-                    className="px-3 py-1.5 bg-[#047857] hover:bg-[#065F46] text-white text-xs font-bold rounded cursor-pointer flex items-center gap-1"
+                    className="px-3 py-1.5 bg-[#0072ce] hover:bg-[#005eb8] text-white text-xs font-bold rounded cursor-pointer flex items-center gap-1"
                   >
                     <span>Next Stage</span>
                   </button>
@@ -570,7 +612,7 @@ export const AbattoirProcessAnimation: React.FC<AbattoirProcessAnimationProps> =
               {/* Environmental Monitoring Ticker */}
               <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 border-t border-slate-800 pt-2">
                 <span>FACILITY TEMP: +2°C (CHILLED LINE)</span>
-                <span className="text-emerald-400 font-bold">VETERINARY DOCTOR SCRUTINY: ACTIVE</span>
+                <span className="text-sky-400 font-bold">VETERINARY DOCTOR SCRUTINY: ACTIVE</span>
                 <span>KUMASI METROPOLIS · ACT 179</span>
               </div>
             </div>

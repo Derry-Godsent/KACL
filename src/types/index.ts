@@ -24,12 +24,16 @@ export interface Product {
 }
 
 export interface BoardMember {
+  /** Optional approved portrait. Missing or failed images use a monogram. */
+  portraitUrl?: string;
   role: string;
   name: string;
   affiliation?: string;
 }
 
 export interface ManagementMember {
+  /** Optional approved portrait. Missing or failed images use a monogram. */
+  portraitUrl?: string;
   position: string;
   name: string;
   department: string;
